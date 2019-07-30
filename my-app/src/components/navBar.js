@@ -6,11 +6,9 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Contacts from '@material-ui/icons/Contacts';
 import TextField from '@material-ui/core/TextField';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import WarningIcon from '@material-ui/icons/Warning';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Toast from './Toast'
+import axios from 'axios'
+
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -64,6 +62,9 @@ const useStyles = makeStyles(theme => ({
   message: {
     display: 'flex',
     alignItems: 'center'
+  },
+  loginBtn: {
+    marginTop: '18px'
   }
 }));
 
@@ -73,16 +74,9 @@ export default function ButtonAppBar() {
     let [password, setPass] = useState('');
     let [userError, setUserError] = useState(false);
     let [passError, setPassError] = useState(false);
-    let [open, setOpen] = React.useState(false);
-    let [success, setSuccess] = React.useState(false);
-
-
-    function handleClick() {
-        if (username.length > 0 && password.length > 0){
-        setSuccess(true)
-        } else setSuccess(false)
-        setOpen(true);
-    }
+    let [open, setOpen] = useState(false);
+    let [success, setSuccess] = useState(false);
+    let [message, setMessage] = useState('');
 
     function handleClose(event, reason) {
         if (reason === 'clickaway') {
@@ -107,81 +101,85 @@ export default function ButtonAppBar() {
         else setPassError(true)
     }
 
+    function submitHandler(e) {
+      e.preventDefault()
+      const state = {
+        username,
+        password,
+      }
+      axios.post('http://localhost:3001/api/users/login', state)
+        .then(response => {
+          setMessage('Logging in...')
+          setSuccess(true)
+          setOpen(true);
+        })
+        .catch(error => {
+          setMessage('Invalid login credentials!')
+          setSuccess(false)
+          setOpen(true)
+          console.error(error)
+        })
+    }
+
     return (
     <div className={classes.root}>
       <AppBar className={classes.appBar} position="static">
         <Toolbar>
             <Contacts className={classes.menuButton} color="inherit" aria-label="menu" />
             <Typography className={classes.title}>
-                Address Book
+              Address Book
             </Typography>
-            <TextField
+            <form onSubmit={submitHandler}>
+              <TextField
                 required
                 label="Username"
                 margin="normal"
                 className={classes.username}
                 InputProps={{
-                    className: classes.multilineColor
+                  className: classes.multilineColor
                 }}
                 InputLabelProps={{
-                    className: classes.multilineColor
+                  className: classes.multilineColor
                 }}
                 FormHelperTextProps={{
-                    className: classes.helperText
+                  className: classes.helperText
                 }}
                 error={userError}
                 onBlur={e => updateUser(e.target.value)}
                 onChange={e => updateUser(e.target.value)}
                 helperText={userError ? "Username is required!" : null}
-            />
-            <TextField
+              />
+              <TextField
                 required
                 label="Password"
                 type="password"
                 margin="normal"
                 className={classes.username}
                 InputProps={{
-                    className: classes.multilineColor
+                  className: classes.multilineColor
                 }}
                 InputLabelProps={{
-                    className: classes.multilineColor
+                  className: classes.multilineColor
                 }}
                 FormHelperTextProps={{
-                    className: classes.helperText
+                  className: classes.helperText
                 }}
                 error={passError}
                 onBlur={e => updatePass(e.target.value)}
                 onChange={e => updatePass(e.target.value)}
                 helperText={passError ? "Password is required!" : null}
-            />
-
-            <Button color="inherit" className={classes.loginBtn} onClick={handleClick}>Login</Button>
+              />
+              <Button
+                type="submit"
+                color="inherit" 
+                className={classes.loginBtn} 
+              >
+                Login
+              </Button>
+            </form>
         </Toolbar>
       </AppBar>
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                open={open}
-                autoHideDuration={2000}
-                onClose={handleClose}
-                ContentProps={{
-                    'aria-describedby': 'message-id',
-                    classes: { root: success ? classes.success : classes.warning }
-                }}
-                message={
-                success 
-                ?  <span id="message-id" className={classes.message}>
-                        <CircularProgress className={classes.icon}/>
-                        Logging in...
-                    </span>
-                :   <span id="message-id" className={classes.message}>
-                        <WarningIcon className={classes.icon} />
-                        Invalid login credentials!
-                    </span>
-                }
-            />
+      <Toast open={open} handleClose={handleClose} success={success} message={message} />
     </div>
   );
 }
