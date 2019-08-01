@@ -19,6 +19,8 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
   },
   title: {
+    fontFamily: "'Caveat', cursive",
+    letterSpacing: '4px',
     flexGrow: 1,
     fontSize: '1.85rem'
   },
@@ -46,23 +48,6 @@ const useStyles = makeStyles(theme => ({
     marginTop: '0px',
     lineHeight: '22px'
   },
-  success: {
-    backgroundColor: '#005618'
-  },
-  warning: {
-    backgroundColor: '#9a0707'
-  },
-  icon: {
-    fontSize: 20,
-    opacity: 0.9,
-    marginRight: theme.spacing(2),
-    marginTop: '2px',
-    color: '#d8d8d8'
-  },
-  message: {
-    display: 'flex',
-    alignItems: 'center'
-  },
   loginBtn: {
     marginTop: '18px'
   }
@@ -77,6 +62,7 @@ export default function ButtonAppBar() {
     let [open, setOpen] = useState(false);
     let [success, setSuccess] = useState(false);
     let [message, setMessage] = useState('');
+    
 
     function handleClose(event, reason) {
         if (reason === 'clickaway') {
