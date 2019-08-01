@@ -67,7 +67,7 @@ export default function Header(props) {
                         </InputLabel>
                         <Select
                             input={<OutlinedInput labelWidth={labelWidth} 
-                            id="outlined-age-simple" 
+                            id="outlined-age-simple" value="first"
                             />}
                         >
                             <MenuItem value="first">First Name</MenuItem>

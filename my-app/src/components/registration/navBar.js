@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withRouter } from "react-router";
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -53,7 +54,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function ButtonAppBar() {
+function NavBar(props) {
     const classes = useStyles();
     let [username, setUser] = useState('');
     let [password, setPass] = useState('');
@@ -63,6 +64,12 @@ export default function ButtonAppBar() {
     let [success, setSuccess] = useState(false);
     let [message, setMessage] = useState('');
     
+    React.useEffect(() => {
+      const token = localStorage.getItem('token');
+      if(token){
+        props.history.push('/contacts');
+      }
+    }, []);
 
     function handleClose(event, reason) {
         if (reason === 'clickaway') {
@@ -95,9 +102,13 @@ export default function ButtonAppBar() {
       }
       axios.post('http://localhost:3001/api/users/login', state)
         .then(response => {
+          localStorage.setItem('token', response.data.token);
           setMessage('Logging in...')
           setSuccess(true)
-          setOpen(true);
+          setOpen(true)
+          setTimeout(() => {
+            props.history.push('/contacts');
+          }, 4000)
         })
         .catch(error => {
           setMessage('Invalid login credentials!')
@@ -169,3 +180,4 @@ export default function ButtonAppBar() {
     </div>
   );
 }
+export default withRouter(NavBar)

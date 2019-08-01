@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -37,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function TopNav() {
+function TopNav(props) {
     const classes = useStyles();   
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -47,6 +48,11 @@ export default function TopNav() {
 
     function handleClose() {
         setAnchorEl(null);
+    }
+
+    function handleLogout(){
+        localStorage.removeItem('token');
+        props.history.push("/");
     }
 
     return (
@@ -76,9 +82,11 @@ export default function TopNav() {
                     >
                         <MenuItem onClick={handleClose}>Profile</MenuItem>
                         <MenuItem onClick={handleClose}>My account</MenuItem>
-                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
                     </Menu>
             </div>
         </AppBar>
     );
 }
+
+export default withRouter(TopNav)

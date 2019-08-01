@@ -1,153 +1,64 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { makeStyles } from '@material-ui/core/styles';
+import { Dialog }from '@material-ui/core';
+import DetailsForm from './details/details'
+import Confirmation from './details/confirmation'
+import Loading from './details/loading'
+import Success from './details/success'
 
-const useStyles = makeStyles(theme => ({
-    dialogTitle: {
-        backgroundColor: '#00293b',
-        color: 'white',
-        textAlign: 'center'
-    },
-   title: {
-        fontSize: '29px',
-        letterSpacing: '6px',
-        margin: 0
-   },
-   container: {
-        display: 'grid', 
-        gridTemplateColumns: '1fr 1fr', 
-        gridGap: '30px'
-   }
-}));
-
-
-export default function ContactDetails(props) {
-    const classes = useStyles();
-    let [ edit, setEdit ] = React.useState(true)
-    let [ save, setSave ] = React.useState(false)
-
-    function handleEdit(){
-        setEdit(!edit)
-        setSave(!save)
+export default class ContactDetails extends React.Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            details: true,
+            confirmation: false,
+            loading: false,
+            success: false,
+        }
     }
 
-    function handleSave() {
-        setEdit(!edit)
-        setSave(!save)
+    openConfirmation = () => {
+        this.setState({
+            details: false,
+            confirmation: true
+        })
     }
-    
-    return (
-        <div>
-            <Dialog open={props.open} onClose={props.handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
-                    <h2 className={classes.title}>
-                        Contact Details
-                    </h2>
-                </DialogTitle>
-                <DialogContent>
-                    <div className={classes.container}>
-                        <TextField
-                            margin="dense"
-                            label="First Name"
-                            defaultValue="Jericho"
-                            InputProps={{
-                                readOnly: edit,
-                            }}
-                        />
-                        <TextField
-                            margin="dense"
-                            label="Last Name"
-                            defaultValue="Aldemo"
-                            InputProps={{
-                                readOnly: edit,
-                            }}
-                        />
-                        <TextField
-                            margin="dense"
-                            label="Home Phone"
-                            defaultValue="501-911-091"
-                            InputProps={{
-                                readOnly: edit,
-                            }}
-                        />
-                        <TextField
-                            margin="dense"
-                            label="Mobile Phone"
-                            defaultValue="09471434511"
-                            InputProps={{
-                                readOnly: edit,
-                            }}
-                        />
-                        <TextField
-                            margin="dense"
-                            label="Work Phone"
-                            defaultValue="123-456789"
-                            InputProps={{
-                                readOnly: edit,
-                            }}
-                        />
-                        <TextField
-                            margin="dense"
-                            label="Email"
-                            type="email"
-                            defaultValue="jericho.aldemo@boom.camp"
-                            InputProps={{
-                                readOnly: edit,
-                            }}
-                        />
-                        <TextField
-                            margin="dense"
-                            label="City"
-                            defaultValue="Sorsogon City"
-                            InputProps={{
-                                readOnly: edit,
-                            }}
-                        />
-                        <TextField
-                            margin="dense"
-                            label="State or Province"
-                            defaultValue="Sorsogon"
-                            InputProps={{
-                                readOnly: edit,
-                            }}
-                        />
-                        <TextField
-                            margin="dense"
-                            label="Postal Code"
-                            defaultValue="4501"
-                            InputProps={{
-                                readOnly: edit,
-                            }}
-                        />
-                        <TextField
-                            margin="dense"
-                            label="Country"
-                            defaultValue="Philippines"
-                            InputProps={{
-                                readOnly: edit,
-                            }}
-                        />
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={props.handleClose} color="primary">
-                        Cancel
-                    </Button>
-                    {edit
-                    ?   <Button onClick={() => handleEdit()} color="primary">
-                            Edit
-                        </Button>
-                    :   <Button onClick={() => handleSave()} color="primary">
-                            Save
-                        </Button>
+
+    openLoading = () => {
+        this.setState({
+            confirmation: false,
+            loading: true
+        })
+    }
+
+    openSuccess = () => {
+        this.setState({
+            loading: false,
+            success: true
+        })
+    }
+
+    render(){
+        return (
+            <div>
+                <Dialog open={this.props.open} onClose={this.props.handleClose} aria-labelledby="form-dialog-title">
+                    {this.state.details
+                    ? <DetailsForm handleClose={this.props.handleClose} delete={this.openConfirmation} />
+                    : null
                     }
-                </DialogActions>
-            </Dialog>
-        </div>
-    );
+                    {this.state.confirmation
+                    ? <Confirmation handleClose={this.props.handleClose} continue={this.openLoading}  />
+                    : null
+                    }
+                    {this.state.loading
+                    ? <Loading openSuccess={this.openSuccess} />
+                    : null
+                    }
+                    {this.state.success
+                    ? <Success handleClose={this.props.handleClose}/>
+                    : null
+                    }
+                </Dialog>
+            </div>
+        );
+    }
 }

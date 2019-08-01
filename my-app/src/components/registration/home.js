@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withRouter } from "react-router";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -47,7 +48,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Home() {
+function Home(props) {
   const classes = useStyles();
   let [ first_name, setFirst ] = useState('');
   let [ last_name, setLast ] = useState('');
@@ -124,6 +125,7 @@ export default function Home() {
       setMessage('Succesfully registered!')
       setSuccess(true)
       setOpen(true);
+      props.history.push('/contacts');
     })
     .catch(error => {
       setMessage('Username is already taken! Please enter another one.')
@@ -232,3 +234,4 @@ export default function Home() {
     </div>
   );
 }
+export default withRouter(Home);

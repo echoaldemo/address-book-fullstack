@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import { withStyles } from '@material-ui/styles'
 import { CssBaseline, Paper } from '@material-ui/core';
 
@@ -132,4 +133,4 @@ class Contacts extends Component {
     }
 }
 
-export default withStyles(styles)(Contacts)
+export default withRouter(withStyles(styles)(Contacts))

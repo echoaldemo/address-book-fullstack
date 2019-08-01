@@ -1,11 +1,17 @@
 import React, { Component } from 'react'
 import Home from './registration/home'
 import Contacts from './main/contacts'
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-export default class Form extends Component {
+export default class App extends Component {
   render() {
     return (
-        <Contacts />
+      <BrowserRouter>
+        <Switch>
+          <Route path="/contacts" component={Contacts} />
+          <Route exact path="/" component={Home} />
+        </Switch>
+      </BrowserRouter>
     )
   }
 }
