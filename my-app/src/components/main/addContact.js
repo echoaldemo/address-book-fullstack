@@ -6,6 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from '@material-ui/core/styles';
+import axios from 'axios';
 
 const styles = {
     dialogTitle: {
@@ -39,6 +40,8 @@ const defaultState = {
     firstError: false,
     addDisabled: true,
 }
+
+const id = localStorage.getItem('id');
 
 class AddContact extends Component {
     constructor(props){
@@ -122,7 +125,13 @@ class AddContact extends Component {
             firstError: true
         })
         else{   
-            console.log(this.state)
+            axios.post(`http://localhost:3001/api/contacts/add/${id}`, this.state)
+                .then(response => {
+                    this.props.handleAdd()        
+                })
+                .catch(error => {
+                    console.error(error)
+                })
             this.setState({
                 ...defaultState
             })
@@ -132,7 +141,7 @@ class AddContact extends Component {
     render(){
         const { open, handleClose, classes } = this.props;
         return (
-                <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog onExit={this.props.handleAdd} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
                         <p className={classes.title}>
                             Add Contact

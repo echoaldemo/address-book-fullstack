@@ -59,12 +59,12 @@ export default function Confirmation(props) {
                 <div className={classes.container}>
                     <Warning className={classes.warning} />
                     <Typography variant="h4" gutterBottom className={classes.content}>
-                        Are you sure you want to delete Jericho from your address book?
+                        Are you sure you want to delete this contact from your address book?
                     </Typography>
                 </div>
             </DialogContent>
             <DialogActions className={classes.actions}>
-                <Button variant="contained">
+                <Button onClick={props.handleClose} variant="contained">
                     Cancel
                 </Button>
                 <ContinueButton onClick={props.continue} variant="contained" color="primary">

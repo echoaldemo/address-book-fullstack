@@ -37,24 +37,44 @@ export default class ContactDetails extends React.Component {
         })
     }
 
+    handleCancelConfirm = () => {
+        this.props.handleClose()
+        setTimeout(() => {
+            this.setState({
+                details: true,
+                confirmation: false
+            })
+        }, 500)
+    }
+
+    handleSuccess = () => {
+        this.props.handleClose()
+        setTimeout(() => {
+            this.setState({
+                details: true,
+                success: false
+            })
+        }, 500)
+    }
+
     render(){
         return (
             <div>
-                <Dialog open={this.props.open} onClose={this.props.handleClose} aria-labelledby="form-dialog-title">
+                <Dialog disableBackdropClick disableEscapeKeyDown open={this.props.open} onClose={this.props.handleClose} aria-labelledby="form-dialog-title">
                     {this.state.details
-                    ? <DetailsForm handleClose={this.props.handleClose} delete={this.openConfirmation} />
+                    ? <DetailsForm updateContacts={this.props.updateContacts} selected={this.props.selected} handleClose={this.props.handleClose} delete={this.openConfirmation} />
                     : null
                     }
                     {this.state.confirmation
-                    ? <Confirmation handleClose={this.props.handleClose} continue={this.openLoading}  />
+                    ? <Confirmation handleClose={this.handleCancelConfirm} continue={this.openLoading}  />
                     : null
                     }
                     {this.state.loading
-                    ? <Loading openSuccess={this.openSuccess} />
+                    ? <Loading updateContacts={this.props.updateContacts} selected={this.props.selected}  openSuccess={this.openSuccess} />
                     : null
                     }
                     {this.state.success
-                    ? <Success handleClose={this.props.handleClose}/>
+                    ? <Success handleClose={this.handleSuccess}/>
                     : null
                     }
                 </Dialog>

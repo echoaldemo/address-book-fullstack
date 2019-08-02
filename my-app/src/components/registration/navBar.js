@@ -102,6 +102,8 @@ function NavBar(props) {
       }
       axios.post('http://localhost:3001/api/users/login', state)
         .then(response => {
+          localStorage.setItem('name', response.data.first_name);
+          localStorage.setItem('id', response.data.id);
           localStorage.setItem('token', response.data.token);
           setMessage('Logging in...')
           setSuccess(true)

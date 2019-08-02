@@ -1,54 +1,12 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { withStyles } from '@material-ui/styles'
-import { CssBaseline, Paper } from '@material-ui/core';
+import { CssBaseline, Paper } from '@material-ui/core'
+import axios from 'axios'
 
 import TopNav from './topNav'
 import Header from './header'
 import ContactsTable from './contactsTable'
-
-const sample = [
-    {
-        first_name: 'Jericho',
-        last_name: 'Aldemo',
-        phone: '09471434511'
-    },
-    {
-        first_name: 'Blaine',
-        last_name: 'Anderson',
-        phone: '0912345678'
-    },
-    {
-        first_name: 'Rachel',
-        last_name: 'Green',
-        phone: '091234567890'
-    },
-    {
-        first_name: 'Monica',
-        last_name: 'Geller',
-        phone: '091234567890'
-    },
-    {
-        first_name: 'Ross',
-        last_name: 'Geller',
-        phone: '091234567890'
-    },
-    {
-        first_name: 'Chandler',
-        last_name: 'Bing',
-        phone: '091234567890'
-    },
-    {
-        first_name: 'Phoebe',
-        last_name: 'Buffay',
-        phone: '091234567890'
-    },
-    {
-        first_name: 'Joey',
-        last_name: 'Tribbiani',
-        phone: '091234567890'
-    }
-]
 
 const styles = {
     root: {
@@ -80,15 +38,57 @@ const ColoredLine = ({ color }) => (
     />
 );
 
+const id = localStorage.getItem('id');
 
 class Contacts extends Component {
     constructor(){
         super()
         this.state = {
-            contacts: sample,
+            contacts: [],
             filtered: [],
-            showFiltered: false
+            showFiltered: false,
+            dataLoaded: false
         }
+    }
+
+    componentDidMount(){
+        axios.get(`http://localhost:3001/api/contacts/all/${id}`)
+            .then(response => {
+                const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
+                this.setState({
+                    contacts: JSON.parse(arr),
+                    dataLoaded: true
+                })
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    }
+
+    updateContacts = () => {
+        axios.get(`http://localhost:3001/api/contacts/all/${id}`)
+            .then(response => {
+                const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
+                this.setState({
+                    contacts: JSON.parse(arr),
+                })
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    }
+
+    updateAddedContact = () => {
+        axios.get(`http://localhost:3001/api/contacts/all/${id}`)
+            .then(response => {
+                const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
+                this.setState({
+                    contacts: JSON.parse(arr),
+                })
+            })
+            .catch(error => {
+                console.error(error)
+            })
     }
 
     handleChange = (query) => {
@@ -119,13 +119,18 @@ class Contacts extends Component {
                 <TopNav />
                 <div className={classes.mainContainer}>
                     <Paper>   
-                        <Header handleChange={this.handleChange}/>
+                        <Header handleAdd={this.updateAddedContact} handleChange={this.handleChange}/>
                         <ColoredLine color="#08b5c3" />    
+                        {this.state.dataLoaded
+                        ?
                         <ContactsTable 
+                            updateContacts={this.updateContacts}
                             showFiltered={this.state.showFiltered}
                             filtered={this.state.filtered}
                             contacts={this.state.contacts}
                         />
+                        : null
+                        }
                     </Paper>
                 </div>
             </div>

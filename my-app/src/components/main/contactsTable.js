@@ -21,15 +21,17 @@ const useStyles = makeStyles(theme => ({
 export default function ContactsTable(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [selected, setSelected] = React.useState(null);
 
-    function handleDialog() {
+    function handleDialog(id) {
+        setSelected(id)
         setOpen(true);
     }
 
     function handleClose() {
         setOpen(false);
     }
-
+    
     return (
         <div className={classes.container}>
         {props.showFiltered
@@ -37,7 +39,7 @@ export default function ContactsTable(props) {
                 <Grid key={contact.first_name} item xs={3} sm container>
                     <Grid item>
                         <Avatar className={classes.avatar}>
-                            <Button onClick={() => handleDialog()} style={{ color: 'white !important' }}>
+                            <Button onClick={() => handleDialog(contact.id)}>
                                 {contact.first_name.charAt(0) + contact.last_name.charAt(0)}
                             </Button>
                         </Avatar>
@@ -58,7 +60,7 @@ export default function ContactsTable(props) {
                     <Grid key={contact.first_name} item xs={3} sm container>
                         <Grid item>
                             <Avatar className={classes.avatar}>
-                                <Button onClick={() => handleDialog()}>
+                                <Button onClick={() => handleDialog(contact.id)}>
                                     {contact.first_name.charAt(0) + contact.last_name.charAt(0)}
                                 </Button>
                             </Avatar>
@@ -69,14 +71,22 @@ export default function ContactsTable(props) {
                                     {contact.first_name + ' ' + contact.last_name}
                                 </Typography>
                                 <Typography variant="body2" gutterBottom color="textSecondary">
-                                    {contact.phone}
+                                    {contact.mobile_phone === ""
+                                    ?   'No number associated'
+                                    :   contact.mobile_phone
+                                    }
                                 </Typography>
                             </Grid>
                         </Grid>
                     </Grid>
                 ))
             }
-            <ContactDetails open={open} handleClose={handleClose} />
+            <ContactDetails 
+            updateContacts={props.updateContacts}
+            selected={selected} 
+            open={open} 
+            handleClose={handleClose} 
+            />
         </div>
     );
 }

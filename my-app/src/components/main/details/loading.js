@@ -1,6 +1,7 @@
 import React from 'react';
 import { DialogContent, Typography, CircularProgress } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import axios from 'axios'
 
 const styles = {
     content: {
@@ -20,7 +21,15 @@ const styles = {
 };
 
 class Loading extends React.Component {
+    
     componentDidMount(){
+        axios.delete(`http://localhost:3001/api/contacts/${this.props.selected}`)
+            .then(response => {
+                setTimeout(this.props.updateContacts, 2000);
+            })
+            .catch(error => {
+                console.error(error)
+            })
         setTimeout(this.props.openSuccess, 2000);
     }
 

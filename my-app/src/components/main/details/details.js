@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, IconButton, TextField, DialogActions, DialogContent, DialogTitle, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { DeleteForever } from '@material-ui/icons'
+import axios from 'axios'
+
 
 const useStyles = makeStyles(theme => ({
     dialogTitle: {
@@ -31,8 +33,96 @@ const useStyles = makeStyles(theme => ({
 
 export default function DetailsForm(props) {
     const classes = useStyles();
-    let [ edit, setEdit ] = React.useState(true)
-    let [ save, setSave ] = React.useState(false)
+    let [firstError, setFirstError] = React.useState(false),
+    [edit, setEdit] = React.useState(true),
+    [save, setSave] = React.useState(false),
+    [contact, setContact] = React.useState(null),
+    [dataLoaded, setDataLoaded] = React.useState(false);
+    
+    React.useEffect(() => {
+        axios.get(`http://localhost:3001/api/contacts/${props.selected}`)
+            .then(response => {
+                setContact(response.data)
+                setDataLoaded(true)
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    }, []);
+
+    function updateFirst(string) {
+        if (string.length > 0) {
+            setContact({
+                ...contact,
+                first_name: string
+            });
+            setFirstError(false)
+        }
+        else setFirstError(true)
+    }
+
+    function updateLast(string) {
+        setContact({
+            ...contact,
+            last_name: string
+        });
+    }
+
+    function updateHome(string) {
+        setContact({
+            ...contact,
+            home_phone: string
+        });
+    }
+
+    function updateMobile(string) {
+        setContact({
+            ...contact,
+            mobile_phone: string
+        });
+    }
+
+    function updateWork(string) {
+        setContact({
+            ...contact,
+            work_phone: string
+        });
+    }
+
+    function updateEmail(string) {
+        setContact({
+            ...contact,
+            email: string
+        });
+    }
+
+    function updateCity(string) {
+        setContact({
+            ...contact,
+            city: string
+        });
+    }
+
+    function updateSoP(string) {
+        setContact({
+            ...contact,
+            state_or_province: string
+        });
+    }
+
+    function updatePostal(string) {
+        setContact({
+            ...contact,
+            postal_code: string
+        });
+    }
+
+    function updateCountry(string) {
+        setContact({
+            ...contact,
+            country: string
+        });
+    }
 
     function handleEdit(){
         setEdit(!edit)
@@ -40,102 +130,125 @@ export default function DetailsForm(props) {
     }
 
     function handleSave() {
+        axios.patch(`http://localhost:3001/api/contacts/${contact.id}`, contact)
+        .then(response => {
+            props.updateContacts()
+        })
+        .catch(error => {
+        console.error(error)
+        })
         setEdit(!edit)
         setSave(!save)
     }
     
-    return (
+    return (   
         <React.Fragment>
             <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
                 <p className={classes.title}>
                     Contact Details
                 </p>
             </DialogTitle>
+            {dataLoaded
+            ? 
             <DialogContent>
                 <div className={classes.container}>
                     <TextField
+                        error={firstError}
+                        onChange={e => updateFirst(e.target.value)}
                         margin="dense"
                         label="First Name"
-                        defaultValue="Jericho"
+                        defaultValue={contact.first_name}
                         InputProps={{
                             readOnly: edit,
                         }}
+                        helperText={firstError ? 'First name cannot be left blank!' : null}
                         />
                     <TextField
+                        onChange={e => updateLast(e.target.value)}
                         margin="dense"
                         label="Last Name"
-                        defaultValue="Aldemo"
+                        defaultValue={contact.last_name}
                         InputProps={{
                             readOnly: edit,
                         }}
                     />
                     <TextField
+                        onChange={e => updateHome(e.target.value)}
                         margin="dense"
                         label="Home Phone"
-                        defaultValue="501-911-091"
+                        defaultValue={contact.home_phone}
                         InputProps={{
                             readOnly: edit,
                         }}
                     />
                     <TextField
+                        onChange={e => updateMobile(e.target.value)}
                         margin="dense"
                         label="Mobile Phone"
-                        defaultValue="09471434511"
+                        defaultValue={contact.mobile_phone}
                         InputProps={{
                             readOnly: edit,
                         }}
-                        />
+                    />
                     <TextField
+                        onChange={e => updateWork(e.target.value)}
                         margin="dense"
                         label="Work Phone"
-                        defaultValue="123-456789"
+                        defaultValue={contact.work_phone}
                         InputProps={{
                             readOnly: edit,
                         }}
                         />
                     <TextField
+                        onChange={e => updateEmail(e.target.value)}
                         margin="dense"
                         label="Email"
                         type="email"
-                        defaultValue="jericho.aldemo@boom.camp"
+                        defaultValue={contact.email}
                         InputProps={{
                             readOnly: edit,
                         }}
                     />
                     <TextField
+                        onChange={e => updateCity(e.target.value)}
                         margin="dense"
                         label="City"
-                        defaultValue="Sorsogon City"
+                        defaultValue={contact.city}
                         InputProps={{
                             readOnly: edit,
                         }}
                     />
                     <TextField
+                        onChange={e => updateSoP(e.target.value)}
                         margin="dense"
                         label="State or Province"
-                        defaultValue="Sorsogon"
+                        defaultValue={contact.state_or_province}
                         InputProps={{
                             readOnly: edit,
                         }}
                     />
                     <TextField
+                        onChange={e => updatePostal(e.target.value)}
                         margin="dense"
                         label="Postal Code"
-                        defaultValue="4501"
+                        defaultValue={contact.postal_code}
                         InputProps={{
                             readOnly: edit,
                         }}
                     />
                     <TextField
+                        onChange={e => updateCountry(e.target.value)}
                         margin="dense"
                         label="Country"
-                        defaultValue="Philippines"
+                        defaultValue={contact.country}
                         InputProps={{
                             readOnly: edit,
                         }}
                     />
                 </div>
             </DialogContent>
+            : null
+            }
             <div className={classes.actions}>
                 <div className={classes.delete}>
                     <Tooltip title="Delete Contact" placement="right">
@@ -152,7 +265,7 @@ export default function DetailsForm(props) {
                     ?   <Button onClick={() => handleEdit()} color="primary">
                             Edit
                         </Button>
-                    :   <Button onClick={() => handleSave()} color="primary">
+                    :   <Button disabled={firstError} onClick={() => handleSave()} color="primary">
                             Save
                         </Button>
                     }

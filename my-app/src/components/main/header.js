@@ -82,7 +82,7 @@ export default function Header(props) {
                     </Tooltip>
                 </div>
             </Typography>
-            <AddContact open={open} handleClose={handleClose} />
+            <AddContact handleAdd={props.handleAdd} open={open} handleClose={handleClose} />
         </React.Fragment>
     );
 }

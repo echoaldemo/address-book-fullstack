@@ -41,7 +41,8 @@ const useStyles = makeStyles(theme => ({
 function TopNav(props) {
     const classes = useStyles();   
     const [anchorEl, setAnchorEl] = React.useState(null);
-
+    let name = localStorage.getItem('name');
+ 
     function handleClick(event) {
         setAnchorEl(event.currentTarget);
     }
@@ -54,7 +55,6 @@ function TopNav(props) {
         localStorage.removeItem('token');
         props.history.push("/");
     }
-
     return (
         <AppBar className={classes.appBar} position="static">
             <Toolbar>
@@ -71,7 +71,7 @@ function TopNav(props) {
                     color="inherit"
                     className={classes.logoutBtn} 
                 >
-                    <Person style={{ marginRight: '10px' }} />   User
+                    <Person style={{ marginRight: '10px' }} />   {name}
                 </Button>
                     <Menu
                         id="simple-menu"

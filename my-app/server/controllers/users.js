@@ -45,9 +45,6 @@ function login(req, res) {
             {
                 username,
             },
-            {
-                fields: ['id', 'username', 'email', 'password'],
-            }
         )
         .then(user => {
             if (!user) {
