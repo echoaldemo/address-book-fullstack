@@ -73,21 +73,28 @@ function getContacts(req, res) {
 
 function sort(req, res) {
     const db = req.app.get('db');
-    const { sort_column, sort_by, address_book_id } = req.body
+    const { id } = req.params
+    const { sort_column, sort_by } = req.body
 
-    db.contacts
-        .find({
-            address_book_id                    
-        }, 
-        {
-            order: [{
-                field: sort_column,
-                direction: sort_by,
-                nulls: 'last'
-            }]
+    db.address_book
+        .findOne({
+            userId: id
         })
-        .then(contacts => {
-            res.status(200).json(contacts);
+        .then(adb => {
+            db.contacts
+                .find({
+                    address_book_id: adb.id                    
+                }, 
+                {
+                    order: [{
+                        field: sort_column,
+                        direction: sort_by,
+                        nulls: 'last'
+                    }]
+                })
+                .then(contacts => {
+                    res.status(200).json(contacts);
+                })
         })
         .catch(err => {
             console.error(err);

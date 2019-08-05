@@ -7,6 +7,7 @@ import axios from 'axios'
 import TopNav from './topNav'
 import Header from './header'
 import ContactsTable from './contactsTable'
+import InputHead from './inputHead'
 
 const styles = {
     root: {
@@ -78,8 +79,8 @@ class Contacts extends Component {
             })
     }
 
-    updateAddedContact = () => {
-        axios.get(`http://localhost:3001/api/contacts/all/${id}`)
+    sortHandler = (params) => {
+        axios.post(`http://localhost:3001/api/contacts/sort/${id}`, params)
             .then(response => {
                 const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
                 this.setState({
@@ -119,16 +120,19 @@ class Contacts extends Component {
                 <TopNav />
                 <div className={classes.mainContainer}>
                     <Paper>   
-                        <Header handleAdd={this.updateAddedContact} handleChange={this.handleChange}/>
+                        <Header handleAdd={this.updateContacts}/>
                         <ColoredLine color="#08b5c3" />    
                         {this.state.dataLoaded
                         ?
-                        <ContactsTable 
-                            updateContacts={this.updateContacts}
-                            showFiltered={this.state.showFiltered}
-                            filtered={this.state.filtered}
-                            contacts={this.state.contacts}
-                        />
+                        <React.Fragment>
+                            <InputHead handleChange={this.handleChange} sortHandler={this.sortHandler} />
+                            <ContactsTable 
+                                updateContacts={this.updateContacts}
+                                showFiltered={this.state.showFiltered}
+                                filtered={this.state.filtered}
+                                contacts={this.state.contacts}
+                            />
+                        </React.Fragment>
                         : null
                         }
                     </Paper>

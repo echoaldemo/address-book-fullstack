@@ -28,7 +28,11 @@ const useStyles = makeStyles(theme => ({
    delete: {
        display: 'grid', 
        gridTemplateColumns: '1fr 3fr'
-   }
+   },
+    label: {
+        color: '#1e6f92',
+        fontSize: '15px'
+    }
 }));
 
 export default function DetailsForm(props) {
@@ -161,6 +165,9 @@ export default function DetailsForm(props) {
                         InputProps={{
                             readOnly: edit,
                         }}
+                        InputLabelProps={{
+                                className: classes.label,
+                        }}
                         helperText={firstError ? 'First name cannot be left blank!' : null}
                         />
                     <TextField
@@ -171,6 +178,9 @@ export default function DetailsForm(props) {
                         InputProps={{
                             readOnly: edit,
                         }}
+                        InputLabelProps={{
+                            className: classes.label,
+                        }}
                     />
                     <TextField
                         onChange={e => updateHome(e.target.value)}
@@ -179,6 +189,9 @@ export default function DetailsForm(props) {
                         defaultValue={contact.home_phone}
                         InputProps={{
                             readOnly: edit,
+                        }}
+                        InputLabelProps={{
+                                className: classes.label,
                         }}
                     />
                     <TextField
@@ -189,6 +202,9 @@ export default function DetailsForm(props) {
                         InputProps={{
                             readOnly: edit,
                         }}
+                        InputLabelProps={{
+                                className: classes.label,
+                        }}
                     />
                     <TextField
                         onChange={e => updateWork(e.target.value)}
@@ -197,6 +213,9 @@ export default function DetailsForm(props) {
                         defaultValue={contact.work_phone}
                         InputProps={{
                             readOnly: edit,
+                        }}
+                        InputLabelProps={{
+                                className: classes.label,
                         }}
                         />
                     <TextField
@@ -208,6 +227,9 @@ export default function DetailsForm(props) {
                         InputProps={{
                             readOnly: edit,
                         }}
+                        InputLabelProps={{
+                                className: classes.label,
+                        }}
                     />
                     <TextField
                         onChange={e => updateCity(e.target.value)}
@@ -216,6 +238,9 @@ export default function DetailsForm(props) {
                         defaultValue={contact.city}
                         InputProps={{
                             readOnly: edit,
+                        }}
+                        InputLabelProps={{
+                                className: classes.label,
                         }}
                     />
                     <TextField
@@ -226,6 +251,9 @@ export default function DetailsForm(props) {
                         InputProps={{
                             readOnly: edit,
                         }}
+                        InputLabelProps={{
+                                className: classes.label,
+                        }}
                     />
                     <TextField
                         onChange={e => updatePostal(e.target.value)}
@@ -235,6 +263,9 @@ export default function DetailsForm(props) {
                         InputProps={{
                             readOnly: edit,
                         }}
+                        InputLabelProps={{
+                                className: classes.label,
+                        }}
                     />
                     <TextField
                         onChange={e => updateCountry(e.target.value)}
@@ -243,6 +274,9 @@ export default function DetailsForm(props) {
                         defaultValue={contact.country}
                         InputProps={{
                             readOnly: edit,
+                        }}
+                        InputLabelProps={{
+                                className: classes.label,
                         }}
                     />
                 </div>

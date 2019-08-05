@@ -26,7 +26,7 @@ massive({
   //CONTACTS ENDPOINTS
   app.post('/api/contacts/add/:id', contacts.create)
   app.get('/api/contacts/all/:id', contacts.getContacts)
-  app.post('/api/contacts/sort', contacts.sort)
+  app.post('/api/contacts/sort/:id', contacts.sort)
 
   app.get('/api/contacts/:id', contacts.viewContact)
   app.patch('/api/contacts/:id', contacts.updateContact)

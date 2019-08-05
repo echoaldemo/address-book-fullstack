@@ -23,6 +23,10 @@ const styles = {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gridGap: '30px'
+    },
+    label: {
+        color: '#1e6f92',
+        fontSize: '15px'
     }
 }
 
@@ -155,56 +159,85 @@ class AddContact extends Component {
                                 required
                                 label="First Name"
                                 onChange={e => this.handleFirst(e.target.value)}
-                                onBlur={e => this.handleFirst(e.target.value)}
                                 error={this.state.firstError}
                                 helperText={this.state.firstError ? 'First name is required!' : null}
+                                InputLabelProps={{
+                                className: classes.label,
+                                }}
                             />
                             <TextField
                                 margin="dense"
                                 label="Last Name"
-                            onChange={e => this.handleLast(e.target.value)}
+                                onChange={e => this.handleLast(e.target.value)}
                                 helperText={null}
+                                InputLabelProps={{
+                                className: classes.label,
+                                }}
                             />
                             <TextField
                                 margin="dense"
                                 label="Home Phone"
-                            onChange={e => this.handleHome(e.target.value)}
+                                onChange={e => this.handleHome(e.target.value)}
+                                InputLabelProps={{
+                                className: classes.label,
+                                }}
                             />
                             <TextField
                                 margin="dense"
                                 label="Mobile Phone"
-                            onChange={e => this.handleMobile(e.target.value)}
+                                onChange={e => this.handleMobile(e.target.value)}
+                                InputLabelProps={{
+                                className: classes.label,
+                                }}
                             />
                             <TextField
                                 margin="dense"
                                 label="Work Phone"
                             onChange={e => this.handleWork(e.target.value)}
+                            InputLabelProps={{
+                                className: classes.label,
+                                }}
                             />
                             <TextField
                                 margin="dense"
                                 label="Email"
                                 type="email"
                             onChange={e => this.handleEmail(e.target.value)}
+                            InputLabelProps={{
+                                className: classes.label,
+                                }}
                             />
                             <TextField
                                 margin="dense"
                                 label="City"
                             onChange={e => this.handleCity(e.target.value)}
+                            InputLabelProps={{
+                                className: classes.label,
+                                }}
                             />
                             <TextField
                                 margin="dense"
                                 label="State or Province"
                             onChange={e => this.handleSoP(e.target.value)}
+                            InputLabelProps={{
+                                className: classes.label,
+                                }}
                             />
                             <TextField
                                 margin="dense"
                                 label="Postal Code"
                             onChange={e => this.handlePostal(e.target.value)}
+                            InputLabelProps={{
+                                className: classes.label,
+                                }}
                             />
                             <TextField
                                 margin="dense"
                                 label="Country"
                             onChange={e => this.handleCountry(e.target.value)}
+                            InputLabelProps={{
+                                className: classes.label,
+                                }}
                             />
                         </div>
                     </DialogContent>
