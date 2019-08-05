@@ -51,7 +51,7 @@ export default function Loading(props) {
                 <div className={classes.container}>
                     <CheckCircle className={classes.check} />
                     <Typography variant="h4" gutterBottom className={classes.content}>
-                        Contact was deleted.
+                        {props.message}
                     </Typography>
                 </div>
             </DialogContent>
@@ -62,4 +62,4 @@ export default function Loading(props) {
             </DialogActions>
         </React.Fragment>
     );
-}
+} 

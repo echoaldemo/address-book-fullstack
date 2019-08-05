@@ -15,6 +15,7 @@ import Background from '../../assets/images/background.png'
 import Navbar from './navBar'
 import axios from 'axios'
 import Toast from './Toast'
+import withWidth from '@material-ui/core/withWidth'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,6 +50,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Home(props) {
+  const { width } = props;
   const classes = useStyles();
   let [ first_name, setFirst ] = useState('');
   let [ last_name, setLast ] = useState('');
@@ -120,7 +122,7 @@ function Home(props) {
       first_name,
       last_name
     }
-    axios.post('http://localhost:3001/api/users/register', state)
+    axios.post(process.env.REACT_APP_BASE_URL + '/api/users/register', state)
     .then(response => {
       setMessage('Succesfully registered!')
       setSuccess(true)
@@ -140,14 +142,17 @@ function Home(props) {
       <Navbar />
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
-        <Grid item xs={false} sm={4} md={7} className={classes.image} />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        {width === 'sm' || width === 'xs' 
+        ? null
+        : <Grid item xs={false} sm={4} md={7} className={classes.image} />
+        }
+        <Grid item xs={12} sm={12} md={5} component={Paper} elevation={6} square>
           <div className={classes.paper}>
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Create a New Account
+              Create a New {width}
             </Typography>
             <form className={classes.form} onSubmit={submitHandler}>
               <Grid container spacing={3}>
@@ -234,4 +239,4 @@ function Home(props) {
     </div>
   );
 }
-export default withRouter(Home);
+export default withRouter(withWidth()(Home));

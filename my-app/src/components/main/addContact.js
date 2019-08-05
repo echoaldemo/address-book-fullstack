@@ -6,7 +6,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from '@material-ui/core/styles';
-import axios from 'axios';
+import Loading from './details/loading'
+import Success from './details/success'
 
 const styles = {
     dialogTitle: {
@@ -43,6 +44,9 @@ const defaultState = {
     country: '',
     firstError: false,
     addDisabled: true,
+    addForm: true,
+    loading: false,
+    success: false
 }
 
 const id = localStorage.getItem('id');
@@ -124,131 +128,155 @@ class AddContact extends Component {
     }
 
     handleAdd = () => {
-        if (this.state.first_name.length === 0)
+        if (this.state.first_name.length === 0){
+            this.setState({
+                firstError: true
+            })
+        }
+        else {
+            this.setState({
+                addForm: false,
+                loading: true
+            }) 
+        }
+    }
+
+    openSuccess = () => {
         this.setState({
-            firstError: true
+            loading: false,
+            success: true
         })
-        else{   
-            axios.post(`http://localhost:3001/api/contacts/add/${id}`, this.state)
-                .then(response => {
-                    this.props.handleAdd()        
-                })
-                .catch(error => {
-                    console.error(error)
-                })
+    }
+
+    closeHandler = () => {
+        this.props.handleClose()
+        setTimeout(() => {
             this.setState({
                 ...defaultState
             })
-        }
+        }, 1000)
     }
 
     render(){
         const { open, handleClose, classes } = this.props;
         return (
             <Dialog onExit={this.props.handleAdd} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
-                        <p className={classes.title}>
-                            Add Contact
-                        </p>
-                    </DialogTitle>
-                    <DialogContent>
-                        <div className={classes.container}>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                required
-                                label="First Name"
-                                onChange={e => this.handleFirst(e.target.value)}
-                                error={this.state.firstError}
-                                helperText={this.state.firstError ? 'First name is required!' : null}
-                                InputLabelProps={{
-                                className: classes.label,
-                                }}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="Last Name"
-                                onChange={e => this.handleLast(e.target.value)}
-                                helperText={null}
-                                InputLabelProps={{
-                                className: classes.label,
-                                }}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="Home Phone"
-                                onChange={e => this.handleHome(e.target.value)}
-                                InputLabelProps={{
-                                className: classes.label,
-                                }}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="Mobile Phone"
-                                onChange={e => this.handleMobile(e.target.value)}
-                                InputLabelProps={{
-                                className: classes.label,
-                                }}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="Work Phone"
-                            onChange={e => this.handleWork(e.target.value)}
-                            InputLabelProps={{
-                                className: classes.label,
-                                }}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="Email"
-                                type="email"
-                            onChange={e => this.handleEmail(e.target.value)}
-                            InputLabelProps={{
-                                className: classes.label,
-                                }}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="City"
-                            onChange={e => this.handleCity(e.target.value)}
-                            InputLabelProps={{
-                                className: classes.label,
-                                }}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="State or Province"
-                            onChange={e => this.handleSoP(e.target.value)}
-                            InputLabelProps={{
-                                className: classes.label,
-                                }}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="Postal Code"
-                            onChange={e => this.handlePostal(e.target.value)}
-                            InputLabelProps={{
-                                className: classes.label,
-                                }}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="Country"
-                            onChange={e => this.handleCountry(e.target.value)}
-                            InputLabelProps={{
-                                className: classes.label,
-                                }}
-                            />
-                        </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="primary">
-                            Cancel
-                        </Button>
-                        <Button disabled={this.state.addDisabled} onClick={() => this.handleAdd()} color="primary">
-                            Add
-                        </Button> 
-                    </DialogActions>
+                    {this.state.addForm
+                    ?   <React.Fragment>
+                            <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
+                                <p className={classes.title}>
+                                    Add Contact
+                                </p>
+                            </DialogTitle>
+                            <DialogContent>
+                                <div className={classes.container}>
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        required
+                                        label="First Name"
+                                        onChange={e => this.handleFirst(e.target.value)}
+                                        error={this.state.firstError}
+                                        helperText={this.state.firstError ? 'First name is required!' : null}
+                                        InputLabelProps={{
+                                        className: classes.label,
+                                        }}
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        label="Last Name"
+                                        onChange={e => this.handleLast(e.target.value)}
+                                        helperText={null}
+                                        InputLabelProps={{
+                                        className: classes.label,
+                                        }}
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        label="Home Phone"
+                                        onChange={e => this.handleHome(e.target.value)}
+                                        InputLabelProps={{
+                                        className: classes.label,
+                                        }}
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        label="Mobile Phone"
+                                        onChange={e => this.handleMobile(e.target.value)}
+                                        InputLabelProps={{
+                                        className: classes.label,
+                                        }}
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        label="Work Phone"
+                                    onChange={e => this.handleWork(e.target.value)}
+                                    InputLabelProps={{
+                                        className: classes.label,
+                                        }}
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        label="Email"
+                                        type="email"
+                                    onChange={e => this.handleEmail(e.target.value)}
+                                    InputLabelProps={{
+                                        className: classes.label,
+                                        }}
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        label="City"
+                                    onChange={e => this.handleCity(e.target.value)}
+                                    InputLabelProps={{
+                                        className: classes.label,
+                                        }}
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        label="State or Province"
+                                    onChange={e => this.handleSoP(e.target.value)}
+                                    InputLabelProps={{
+                                        className: classes.label,
+                                        }}
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        label="Postal Code"
+                                    onChange={e => this.handlePostal(e.target.value)}
+                                    InputLabelProps={{
+                                        className: classes.label,
+                                        }}
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        label="Country"
+                                    onChange={e => this.handleCountry(e.target.value)}
+                                    InputLabelProps={{
+                                        className: classes.label,
+                                        }}
+                                    />
+                                </div>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button disabled={this.state.addDisabled} onClick={() => this.handleAdd()} color="primary">
+                                    Add
+                                </Button> 
+                            </DialogActions>
+                        </React.Fragment>
+                    : null
+                    }
+                    {this.state.loading
+                    ? <Loading message="Adding contact..." add={true} openSuccess={this.openSuccess} userID={id} newContact={this.state} handleAdd={this.props.handleAdd}/>
+                    : null
+                    }
+                    {this.state.success
+                    ? <Success message="Contact was added." handleClose={this.closeHandler}/>
+                    : null
+                    }
                 </Dialog>
         );
     }

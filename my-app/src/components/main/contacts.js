@@ -27,6 +27,9 @@ const styles = {
         width: '60vw',
         marginTop: '20px'
     },
+    minHeight: {
+        minHeight: '89vh'
+    }
 }
 
 const ColoredLine = ({ color }) => (
@@ -53,7 +56,7 @@ class Contacts extends Component {
     }
 
     componentDidMount(){
-        axios.get(`http://localhost:3001/api/contacts/all/${id}`)
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/all/${id}`)
             .then(response => {
                 const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
                 this.setState({
@@ -67,7 +70,7 @@ class Contacts extends Component {
     }
 
     updateContacts = () => {
-        axios.get(`http://localhost:3001/api/contacts/all/${id}`)
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/all/${id}`)
             .then(response => {
                 const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
                 this.setState({
@@ -80,7 +83,7 @@ class Contacts extends Component {
     }
 
     sortHandler = (params) => {
-        axios.post(`http://localhost:3001/api/contacts/sort/${id}`, params)
+        axios.post(process.env.REACT_APP_BASE_URL + `/api/contacts/sort/${id}`, params)
             .then(response => {
                 const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
                 this.setState({
@@ -119,7 +122,7 @@ class Contacts extends Component {
                 <CssBaseline />
                 <TopNav />
                 <div className={classes.mainContainer}>
-                    <Paper>   
+                    <Paper className={classes.minHeight}>   
                         <Header handleAdd={this.updateContacts}/>
                         <ColoredLine color="#08b5c3" />    
                         {this.state.dataLoaded

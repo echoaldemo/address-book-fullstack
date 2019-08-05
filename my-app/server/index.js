@@ -1,16 +1,16 @@
+require('dotenv').config()
 const express = require('express');
 const massive = require('massive');
 const users = require('./controllers/users');
 const contacts = require('./controllers/contacts')
-
 const cors = require("cors");
 
 massive({
-  host: 'localhost',
-  port: 5432,
-  database: 'address_book',
-  user: 'postgres',
-  password: 'addressbook',
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
 }).then(db => {
   const app = express();
 
@@ -32,8 +32,7 @@ massive({
   app.patch('/api/contacts/:id', contacts.updateContact)
   app.delete('/api/contacts/:id', contacts.deleteContact)
 
-  const PORT = 3001;
-  app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+  app.listen(process.env.APP_PORT, () => {
+    console.log(`Server listening on port ${process.env.APP_PORT}`);
   });
 });

@@ -23,24 +23,46 @@ const styles = {
 class Loading extends React.Component {
     
     componentDidMount(){
-        axios.delete(`http://localhost:3001/api/contacts/${this.props.selected}`)
-            .then(response => {
-                setTimeout(this.props.updateContacts, 2000);
-            })
-            .catch(error => {
-                console.error(error)
-            })
-        setTimeout(this.props.openSuccess, 2000);
+        if (this.props.edit){
+            axios.patch(process.env.REACT_APP_BASE_URL + `/api/contacts/${this.props.selected}`, this.props.details)
+                .then(response => {
+                    setTimeout(this.props.updateContacts, 2000);
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+            setTimeout(this.props.openSuccess, 2000);
+        }
+        else if (this.props.add) {
+            axios.post(process.env.REACT_APP_BASE_URL + `/api/contacts/add/${this.props.userID}`, this.props.newContact)
+                .then(response => {
+                    this.props.handleAdd()
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+            setTimeout(this.props.openSuccess, 2000);
+        } 
+        else {
+            axios.delete(process.env.REACT_APP_BASE_URL + `/api/contacts/${this.props.selected}`)
+                .then(response => {
+                    setTimeout(this.props.updateContacts, 2000);
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+            setTimeout(this.props.openSuccess, 2000);
+        }
     }
 
     render(){
-        const { classes } = this.props
+        const { classes, message } = this.props
         return (
             <DialogContent>
                 <div className={classes.container}>
                     <CircularProgress size={60} />
                     <Typography variant="h4" gutterBottom className={classes.container}>
-                        Deleting contact...
+                        {message}
                     </Typography>
                 </div>
             </DialogContent>

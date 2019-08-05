@@ -51,6 +51,10 @@ const useStyles = makeStyles(theme => ({
   },
   loginBtn: {
     marginTop: '18px'
+  },
+  toolBar: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr'
   }
 }));
 
@@ -100,7 +104,7 @@ function NavBar(props) {
         username,
         password,
       }
-      axios.post('http://localhost:3001/api/users/login', state)
+      axios.post(process.env.REACT_APP_BASE_URL+'/api/users/login', state)
         .then(response => {
           localStorage.setItem('name', response.data.first_name);
           localStorage.setItem('id', response.data.id);
@@ -110,7 +114,7 @@ function NavBar(props) {
           setOpen(true)
           setTimeout(() => {
             props.history.push('/contacts');
-          }, 4000)
+          }, 2000)
         })
         .catch(error => {
           setMessage('Invalid login credentials!')
@@ -123,11 +127,13 @@ function NavBar(props) {
     return (
     <div className={classes.root}>
       <AppBar className={classes.appBar} position="static">
-        <Toolbar>
-            <Contacts className={classes.menuButton} color="inherit" aria-label="menu" />
-            <Typography className={classes.title}>
-              Address Book
-            </Typography>
+        <Toolbar className={classes.toolBar}>
+            <div>
+              <Contacts className={classes.menuButton} color="inherit" aria-label="menu" />
+              <Typography className={classes.title}>
+                Address Book
+              </Typography>
+            </div>
             <form onSubmit={submitHandler}>
               <TextField
                 required

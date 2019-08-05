@@ -1,6 +1,5 @@
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
-const secret = require('../../secret');
 
 function register(req, res) {
     const db = req.app.get('db');
@@ -28,7 +27,7 @@ function register(req, res) {
             );
         })
         .then(user => {
-            const token = jwt.sign({ userId: user.id }, secret);
+            const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY);
             res.status(201).json({ ...user, token });
         })
         .catch(err => {
@@ -55,7 +54,7 @@ function login(req, res) {
                     throw new Error('Incorrect password');
                 }
 
-                const token = jwt.sign({ userId: user.id }, secret);
+                const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY);
                 delete user.password;
                 res.status(200).json({ ...user, token });
             });

@@ -33,10 +33,29 @@ const useStyles = makeStyles(theme => ({
     actions: {
         justifyContent: 'center', 
         paddingBottom: '40px'
+    },
+    editConfirmation: {
+        backgroundColor: '#999930',
+        color: 'white',
+        textAlign: 'center'
+    },
+    editWarning: {
+        color: '#999930',
+        fontSize: '50px'
     }
 }));
 
-const ContinueButton = withStyles(theme => ({
+const ContinueEditButton = withStyles(theme => ({
+    root: {
+        color: 'white',
+        backgroundColor: '#4e991b',
+        '&:hover': {
+            backgroundColor: '#305d11',
+        },
+    },
+}))(Button);
+
+const ContinueDeleteButton = withStyles(theme => ({
     root: {
         color: 'white',
         backgroundColor: '#c73b3b',
@@ -50,16 +69,19 @@ export default function Confirmation(props) {
     const classes = useStyles();
     return (
         <React.Fragment>
-            <DialogTitle id="form-dialog-title" className={classes.confirmation}>
+            <DialogTitle id="form-dialog-title" className={props.edit ? classes.editConfirmation : classes.confirmation}>
                 <p className={classes.title}>
                     CONFIRMATION
                 </p>
             </DialogTitle>
             <DialogContent>
                 <div className={classes.container}>
-                    <Warning className={classes.warning} />
+                    <Warning className={props.edit ? classes.editWarning :classes.warning} />
                     <Typography variant="h4" gutterBottom className={classes.content}>
-                        Are you sure you want to delete this contact from your address book?
+                        {props.edit 
+                        ? 'Do you want to save the changes?'
+                        : 'Are you sure you want to delete this contact from your address book?'
+                        }
                     </Typography>
                 </div>
             </DialogContent>
@@ -67,9 +89,14 @@ export default function Confirmation(props) {
                 <Button onClick={props.handleClose} variant="contained">
                     Cancel
                 </Button>
-                <ContinueButton onClick={props.continue} variant="contained" color="primary">
-                    Continue
-                </ContinueButton>
+                {props.edit
+                ?   <ContinueEditButton onClick={props.continue} variant="contained" color="primary">
+                        Continue
+                    </ContinueEditButton>
+                :   <ContinueDeleteButton onClick={props.continue} variant="contained" color="primary">
+                        Continue
+                    </ContinueDeleteButton>
+                }
             </DialogActions>
         </React.Fragment>
     );

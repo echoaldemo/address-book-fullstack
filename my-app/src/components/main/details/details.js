@@ -44,7 +44,7 @@ export default function DetailsForm(props) {
     [dataLoaded, setDataLoaded] = React.useState(false);
     
     React.useEffect(() => {
-        axios.get(`http://localhost:3001/api/contacts/${props.selected}`)
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/${props.selected}`)
             .then(response => {
                 setContact(response.data)
                 setDataLoaded(true)
@@ -134,13 +134,7 @@ export default function DetailsForm(props) {
     }
 
     function handleSave() {
-        axios.patch(`http://localhost:3001/api/contacts/${contact.id}`, contact)
-        .then(response => {
-            props.updateContacts()
-        })
-        .catch(error => {
-        console.error(error)
-        })
+        props.openEdit(contact)
         setEdit(!edit)
         setSave(!save)
     }
