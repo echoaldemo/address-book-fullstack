@@ -4,8 +4,10 @@ import DetailsForm from './details/details'
 import Confirmation from './details/confirmation'
 import Loading from './details/loading'
 import Success from './details/success'
+import withWidth from '@material-ui/core/withWidth'
 
-export default class ContactDetails extends React.Component {
+
+class ContactDetails extends React.Component {
     constructor(props){
         super(props)
         this.state = {
@@ -73,11 +75,13 @@ export default class ContactDetails extends React.Component {
     }
 
     render(){
+        const { width } = this.props
         return (
             <div>
-                <Dialog disableBackdropClick disableEscapeKeyDown open={this.props.open} onClose={this.closeHandler} aria-labelledby="form-dialog-title">
+                <Dialog fullScreen={width === 'xs' ? true : false} disableBackdropClick disableEscapeKeyDown open={this.props.open} onClose={this.closeHandler} aria-labelledby="form-dialog-title">
                     {this.state.details
                     ? <DetailsForm 
+                        width={width}
                         openEdit={this.openEdit} 
                         updateContacts={this.props.updateContacts} 
                         selected={this.props.selected} 
@@ -111,3 +115,5 @@ export default class ContactDetails extends React.Component {
         );
     }
 }
+
+export default withWidth()(ContactDetails);

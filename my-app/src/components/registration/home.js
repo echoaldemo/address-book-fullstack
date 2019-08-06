@@ -4,22 +4,28 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Background from '../../assets/images/background.png'
 import Navbar from './navBar'
 import axios from 'axios'
 import Toast from './Toast'
 import withWidth from '@material-ui/core/withWidth'
+import Fade from '@material-ui/core/Fade';
 
 const useStyles = makeStyles(theme => ({
   root: {
     height: '90vh',
+  },
+  rootMd: {
+    minHeight: '90vh',
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)), url(${Background})`,
+    '@media (max-width: 954px)' : {
+      minHeight: '80vh', 
+    }
   },
   image: {
     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)), url(${Background})`,    
@@ -47,7 +53,38 @@ const useStyles = makeStyles(theme => ({
   close: {
     padding: theme.spacing(0.5),
   },
+  lightText: {
+    color: '#bababa'
+  },
+  mdContainer: {
+    margin: '30px auto', 
+    minHeight: '65vh', 
+    backgroundColor: 'transparent', 
+    color: '#bababa', 
+  }
 }));
+
+const CssTextField = withStyles({
+  root: {
+    '& label.Mui-focused': {
+      color: '#44abd4',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#44abd4',
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: '#bababa',
+      },
+      '&:hover fieldset': {
+        borderColor: '#697ad6',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#44abd4',
+      },
+    },
+  },
+})(TextField);
 
 function Home(props) {
   const { width } = props;
@@ -65,6 +102,7 @@ function Home(props) {
   let [open, setOpen] = useState(false);
   let [success, setSuccess] = useState(false);
   let [message, setMessage] = useState('');
+  const [checked, setChecked] = React.useState(false);
   
   function updateUser(string){
     if (string.length > 0){
@@ -113,6 +151,10 @@ function Home(props) {
     setOpen(false);
   }
 
+  function handleChange() {
+    setChecked(prev => !prev);
+  }
+
   function submitHandler(e) {
     e.preventDefault()
     const state = {
@@ -139,25 +181,27 @@ function Home(props) {
 
   return (
     <div>
-      <Navbar />
-      <Grid container component="main" className={classes.root}>
+      <Navbar handleChange={handleChange}/>
+      <Fade in={checked}>
+      <Grid container component="main" className={width === 'lg' || width === 'xl' ? classes.root : classes.rootMd}>
         <CssBaseline />
-        {width === 'sm' || width === 'xs' 
-        ? null
-        : <Grid item xs={false} sm={4} md={7} className={classes.image} />
+        {width === 'lg' || width === 'xl'
+        ? <Grid item xs={false} sm={4} md={7 } className={classes.image} />
+        : null
         }
-        <Grid item xs={12} sm={12} md={5} component={Paper} elevation={6} square>
+        <Grid className={width === 'lg' || width === 'xl' ? "" : classes.mdContainer }
+	       item xs={12} sm={8} md={6} lg={5} component={Box} square>
           <div className={classes.paper}>
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Create a New {width}
+              Create a New Account
             </Typography>
             <form className={classes.form} onSubmit={submitHandler}>
-              <Grid container spacing={3}>
+              <Grid container spacing={width === 'xs' ? 0 : 3}>
                 <Grid item xs={12} sm={6}>
-                  <TextField
+                  <CssTextField
                     variant="outlined"
                     margin="normal"
                     fullWidth
@@ -167,10 +211,17 @@ function Home(props) {
                     onBlur={e => updateFirst(e.target.value)}
                     error={firstError}
                     helperText={firstError ? 'First name is required!' : null}
+                    InputLabelProps={{
+                      className: classes.lightText,
+                    }}
+                    InputProps={{
+                      className: classes.lightText
+                    }}
                   />
+
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <TextField
+                  <CssTextField
                     variant="outlined"
                     margin="normal"
                     required
@@ -180,11 +231,17 @@ function Home(props) {
                     onBlur={e => updateLast(e.target.value)}
                     error={lastError}
                     helperText={lastError ? 'Last name is required!' : null}
+                    InputLabelProps={{
+                      className: classes.lightText,
+                    }}
+                    InputProps={{
+                      className: classes.lightText
+                    }}
                   />
                 </Grid>
               </Grid>
 
-              <TextField
+              <CssTextField
                 variant="outlined"
                 margin="normal"
                 required
@@ -194,8 +251,14 @@ function Home(props) {
                 onBlur={e => updateUser(e.target.value)}
                 error={userError}
                 helperText={userError ? 'Username is required!' : null}
+                InputLabelProps={{
+                      className: classes.lightText,
+                }}
+                InputProps={{
+                  className: classes.lightText
+                }}
               />
-              <TextField
+              <CssTextField
                 variant="outlined"
                 margin="normal"
                 required
@@ -205,8 +268,14 @@ function Home(props) {
                 onBlur={e => updateEmail(e.target.value)}
                 error={emailError}
                 helperText={emailError ? 'Email address is required!' : null}
+                InputLabelProps={{
+                  className: classes.lightText,
+                }}
+                InputProps={{
+                  className: classes.lightText
+                }}
               />
-              <TextField
+              <CssTextField
                 variant="outlined"
                 margin="normal"
                 required
@@ -217,10 +286,12 @@ function Home(props) {
                 onBlur={e => updatePass(e.target.value)}
                 error={passError}
                 helperText={passError ? 'Password is required!' : null}
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
+                InputLabelProps={{
+                  className: classes.lightText,
+                }}
+                InputProps={{
+                  className: classes.lightText
+                }}
               />
               <Button
                 type="submit"
@@ -232,10 +303,11 @@ function Home(props) {
                 Register
               </Button>
             </form>
-            <Toast open={open} handleClose={handleClose} success={success} message={message} />
           </div>
         </Grid>
       </Grid>
+      </Fade>
+      <Toast open={open} handleClose={handleClose} success={success} message={message} />
     </div>
   );
 }

@@ -7,10 +7,24 @@ import withWidth from '@material-ui/core/withWidth';
 
 const useStyles = makeStyles(theme => ({
     container: {
-        padding: '27px 27px 20px 96px', 
+        padding: '27px 27px 20px 46px', 
         display: 'grid', 
         gridTemplateColumns: '1fr 1fr 1fr', 
-        gridGap: '45px'  
+        gridGap: '45px',
+        '@media (max-width: 1100px)' : {
+            padding: '20px',
+            gridTemplateColumns: '1fr 1fr',
+        },
+        '@media (max-width: 699px)' : {
+            gridTemplateColumns: '1fr',
+            justifyItems: 'center'
+        },
+        '@media (max-width: 650px)' : {
+            gridTemplateColumns: '1fr 1fr',
+        },
+        '@media (max-width: 560px)' : {
+            gridTemplateColumns: '1fr',
+        }
     },
     avatar: {
         backgroundColor: 'rgb(8, 181, 195)', 
@@ -54,17 +68,7 @@ function ContactsTable(props) {
     }
 
     return (
-        <div className={
-            (() => {
-                if (width === 'lg' || width === 'xl') {
-                    return classes.container
-                } else if (width === 'md' || width === 'sm') {
-                    return classes.mdContainer
-                } else {
-                    return classes.xsContainer
-                }
-            })()}
-        >
+        <div className={classes.container}>
         {props.showFiltered
             ? props.filtered.map(contact => (
                 <Grid className={width === 'xs' ? classes.grid : ''} key={contact.first_name} xs={width === 'xs' ? false : 3} item sm container>
@@ -91,7 +95,7 @@ function ContactsTable(props) {
                 </Grid>
             ))
             : props.contacts.map(contact => (
-                <Grid className={width === 'xs' ? classes.grid : ''} key={contact.first_name} xs={width === 'xs' ? false : 3} item sm container>
+                <Grid className={classes.grid} key={contact.first_name} xs={width === 'xs' ? false : 3} item sm container>
                     <Grid item>
                         <Avatar className={classes.avatar}>
                             <Button onClick={() => handleDialog(contact.id)}>

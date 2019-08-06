@@ -10,7 +10,10 @@ const useStyles = makeStyles(theme => ({
         display: 'grid',
         gridTemplateColumns: '1fr 19fr 2fr',
         fontFamily: "'Barlow Semi Condensed', sans- serif",
-        alignItems: 'center'
+        alignItems: 'center',
+        '@media (max-width: 650px)' : {
+            gridTemplateColumns: '1fr 9fr 2fr',
+        }
     },
     peopleIcon: {
         marginRight: '6px',

@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from '@material-ui/core/styles';
 import Loading from './details/loading'
 import Success from './details/success'
+import withWidth from '@material-ui/core/withWidth';
 
 const styles = {
     dialogTitle: {
@@ -24,6 +25,11 @@ const styles = {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gridGap: '30px'
+    },
+    xsContainer: {
+        display: 'grid',
+        gridTemplateColumns: '1fr',
+        padding: '0 15px'
     },
     label: {
         color: '#1e6f92',
@@ -158,9 +164,9 @@ class AddContact extends Component {
     }
 
     render(){
-        const { open, handleClose, classes } = this.props;
+        const { open, handleClose, classes, width } = this.props;
         return (
-            <Dialog onExit={this.props.handleAdd} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog fullScreen={width === 'xs' ? true : false} onExit={this.props.handleAdd} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                     {this.state.addForm
                     ?   <React.Fragment>
                             <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
@@ -169,7 +175,7 @@ class AddContact extends Component {
                                 </p>
                             </DialogTitle>
                             <DialogContent>
-                                <div className={classes.container}>
+                                <div className={width === 'xs' ? classes.xsContainer : classes.container}>
                                     <TextField
                                         autoFocus
                                         margin="dense"
@@ -282,4 +288,4 @@ class AddContact extends Component {
     }
 }
 
-export default withStyles(styles)(AddContact)
+export default withWidth()(withStyles(styles)(AddContact));

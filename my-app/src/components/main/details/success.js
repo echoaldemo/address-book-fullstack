@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
         margin: 0
     },
     content: {
-        padding: '8px 30px 30px 30px',
+        paddingTop: '25px',
         fontSize: '24px',
         letterSpacing: '1px',
         textAlign: 'justify'

@@ -25,10 +25,17 @@ const styles = {
     mainContainer: {
         margin: '0 auto',
         width: '60vw',
-        marginTop: '20px'
+        marginTop: '20px',
+        '@media (max-width: 650px)' : {
+            margin: '0',
+            width: '100%',
+        } 
     },
     minHeight: {
-        minHeight: '89vh'
+        minHeight: '88vh',
+        '@media (max-width: 650px)' : {
+            minHeight: '91.5vh'
+        },
     }
 }
 

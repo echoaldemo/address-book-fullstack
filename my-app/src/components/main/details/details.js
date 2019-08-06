@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { DeleteForever } from '@material-ui/icons'
 import axios from 'axios'
 
-
 const useStyles = makeStyles(theme => ({
     dialogTitle: {
         backgroundColor: '#00293b',
@@ -20,6 +19,11 @@ const useStyles = makeStyles(theme => ({
         display: 'grid', 
         gridTemplateColumns: '1fr 1fr', 
         gridGap: '30px'
+   },
+   xsContainer: {
+        display: 'grid',
+        gridTemplateColumns: '1fr',
+        padding: '0 15px'
    },
    actions: {
        display: 'grid', 
@@ -149,7 +153,7 @@ export default function DetailsForm(props) {
             {dataLoaded
             ? 
             <DialogContent>
-                <div className={classes.container}>
+                <div className={props.width === 'xs' ? classes.xsContainer : classes.container}>
                     <TextField
                         error={firstError}
                         onChange={e => updateFirst(e.target.value)}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { withRouter } from "react-router";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -23,17 +23,39 @@ const useStyles = makeStyles(theme => ({
     fontFamily: "'Caveat', cursive",
     letterSpacing: '4px',
     flexGrow: 1,
-    fontSize: '1.85rem'
+    fontSize: '1.85rem',
+  },
+  icon: {
+    display: 'grid',
+    gridTemplateColumns: '0fr 1fr',
+    '@media (max-width: 954px)' : {
+      gridTemplateColumns: '1fr',
+      gridTemplateRows: '1fr 1fr',
+      justifyItems: 'center'
+    }
   },
   menuButton: {
     marginRight: theme.spacing(2),
     fontSize: '2.5rem'
   },
+  form: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 0fr',
+    '@media (max-width: 600px)' : {
+      gridTemplateColumns: '1fr',
+      gridTemplateRows: '1fr 1fr 1fr',
+      justifyItems: 'center'
+    },
+  },
   username: {
     marginRight: theme.spacing(7),
     marginTop: '0px',
     marginBottom: '0px',
-    height: '75px'
+    height: '75px',
+    '@media (max-width: 600px)' : {
+      width: '60%',
+      marginRight: '0px'
+    },
   },
   multilineColor: {
     color: '#ffffff9c',
@@ -54,9 +76,31 @@ const useStyles = makeStyles(theme => ({
   },
   toolBar: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr'
+    gridTemplateColumns: '4fr 2fr',
+    '@media (max-width: 1500px)' : {
+      gridTemplateColumns: '3fr 2fr'
+    },
+    '@media (max-width: 1090px)' : {
+      gridTemplateColumns: '1fr 2fr'
+    },
+    '@media (max-width: 954px)' : {
+      gridTemplateColumns: '1fr',
+      gridTemplateRows: '1fr 1fr',
+      paddingBottom: '8px'
+    }
   }
 }));
+
+const CssTextField = withStyles({
+  root: {
+    '& label.Mui-focused': {
+      color: '#44abd4',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#44abd4',
+    },
+  },
+})(TextField);
 
 function NavBar(props) {
     const classes = useStyles();
@@ -128,14 +172,14 @@ function NavBar(props) {
     <div className={classes.root}>
       <AppBar className={classes.appBar} position="static">
         <Toolbar className={classes.toolBar}>
-            <div>
+            <div className={classes.icon}>
               <Contacts className={classes.menuButton} color="inherit" aria-label="menu" />
               <Typography className={classes.title}>
                 Address Book
               </Typography>
             </div>
-            <form onSubmit={submitHandler}>
-              <TextField
+            <form className={classes.form} onSubmit={submitHandler}>
+              <CssTextField
                 required
                 label="Username"
                 margin="normal"
@@ -154,7 +198,7 @@ function NavBar(props) {
                 onChange={e => updateUser(e.target.value)}
                 helperText={userError ? "Username is required!" : null}
               />
-              <TextField
+              <CssTextField
                 required
                 label="Password"
                 type="password"
@@ -175,7 +219,7 @@ function NavBar(props) {
                 helperText={passError ? "Password is required!" : null}
               />
               <Button
-                type="submit"
+                onClick={props.handleChange}
                 color="inherit" 
                 className={classes.loginBtn} 
               >

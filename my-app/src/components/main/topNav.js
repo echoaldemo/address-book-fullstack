@@ -13,17 +13,29 @@ const useStyles = makeStyles(theme => ({
         background: 'linear-gradient(83deg, rgba(2,78,83,1) 0%, rgba(0,90,126,1) 31%, rgba(4,1,47,1) 82%)',
         padding: '15px 15px 8px 15px',
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr'
+        gridTemplateColumns: '1fr 1fr',
+        '@media (max-width: 500px)' : {
+            gridTemplateColumns: '2fr 1fr',
+        },
     },  
     title: {
         fontFamily: "'Caveat', cursive",
         letterSpacing: '4px',
         flexGrow: 1,
-        fontSize: '1.85rem'
+        fontSize: '1.85rem',
+        '@media (max-width: 650px)' : {
+            fontSize: '18px'
+        },
+        '@media (max-width: 500px)' : {
+            fontSize: '30px'        
+        },
     },
     menuButton: {
         marginRight: theme.spacing(2),
-        fontSize: '2.5rem'
+        fontSize: '2.5rem',
+        '@media (max-width: 650px)' : {
+            fontSize: '30px'
+        },
     },
     logoutBtn: {
         width: '150px',
@@ -31,11 +43,23 @@ const useStyles = makeStyles(theme => ({
         textTransform: 'capitalize',
         fontSize: '20px',
         fontFamily: "'Barlow Semi Condensed', sans- serif",
+        '@media (max-width: 650px)' : {
+            fontSize: '18px'
+        },
+        '@media (max-width: 500px)' : {
+            width: '100%'
+        },
+
     },
     logoutBtnCntnr: {
         display: 'grid',
         justifyContent: 'right',
     },
+    user: {
+        '@media (max-width: 500px)' : {
+            display: 'none'
+        },
+    }
 }));
 
 function TopNav(props) {
@@ -71,7 +95,8 @@ function TopNav(props) {
                     color="inherit"
                     className={classes.logoutBtn} 
                 >
-                    <Person style={{ marginRight: '10px' }} />   {name}
+                    <Person style={{ marginRight: '10px' }} />
+                    <p className={classes.user}>{name}</p>   
                 </Button>
                     <Menu
                         id="simple-menu"
@@ -80,7 +105,6 @@ function TopNav(props) {
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={handleClose}>Profile</MenuItem>
                         <MenuItem onClick={handleClose}>My account</MenuItem>
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
                     </Menu>
