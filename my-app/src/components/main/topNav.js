@@ -76,7 +76,7 @@ function TopNav(props) {
     }
 
     function handleLogout(){
-        localStorage.removeItem('token');
+        localStorage.clear();
         props.history.push("/");
     }
     return (

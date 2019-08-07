@@ -15,6 +15,12 @@ const useStyles = makeStyles(theme => ({
   appBar: {
     background: 'linear-gradient(83deg, rgba(2,78,83,1) 0%, rgba(0,90,126,1) 31%, rgba(4,1,47,1) 82%)',
     padding: '15px 15px 8px 15px',
+    '@media (max-width: 954px)' : {
+      padding: '15px'
+    },
+    '@media (max-width: 600px)' : {
+      minHeight: '100vh'
+    },
   },
   root: {
     flexGrow: 1,
@@ -74,6 +80,13 @@ const useStyles = makeStyles(theme => ({
   loginBtn: {
     marginTop: '18px'
   },
+  signUpBtn: {
+    display: 'none',
+    textTransform: 'none',
+    '@media (max-width: 600px)' : {
+      display: 'block'
+    },
+  },
   toolBar: {
     display: 'grid',
     gridTemplateColumns: '4fr 2fr',
@@ -112,13 +125,6 @@ function NavBar(props) {
     let [success, setSuccess] = useState(false);
     let [message, setMessage] = useState('');
     
-    React.useEffect(() => {
-      const token = localStorage.getItem('token');
-      if(token){
-        props.history.push('/contacts');
-      }
-    }, []);
-
     function handleClose(event, reason) {
         if (reason === 'clickaway') {
             return;
@@ -170,7 +176,7 @@ function NavBar(props) {
 
     return (
     <div className={classes.root}>
-      <AppBar className={classes.appBar} position="static">
+      <AppBar className={classes.appBar} position="static" style={props.hide ? { display: 'none' } : {}}>
         <Toolbar className={classes.toolBar}>
             <div className={classes.icon}>
               <Contacts className={classes.menuButton} color="inherit" aria-label="menu" />
@@ -219,13 +225,21 @@ function NavBar(props) {
                 helperText={passError ? "Password is required!" : null}
               />
               <Button
-                onClick={props.handleChange}
+                onClick={submitHandler}
                 color="inherit" 
                 className={classes.loginBtn} 
               >
                 Login
               </Button>
+               
             </form>
+            <Button
+                onClick={props.handleChange}
+                color="inherit" 
+                className={classes.signUpBtn} 
+              >
+                Don't have an account yet? Sign up here!
+              </Button>
         </Toolbar>
       </AppBar>
       <Toast open={open} handleClose={handleClose} success={success} message={message} />

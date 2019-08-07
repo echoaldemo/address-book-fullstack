@@ -38,7 +38,7 @@ export default function Header(props) {
         <React.Fragment>
             <Typography gutterBottom variant="h5" className={classes.contactsHead}>
                 <People className={classes.peopleIcon} /> All Contacts
-                    <Tooltip title="Add Contact" placement="right">
+                    <Tooltip title="Add Contact" placement="left">
                         <IconButton color="primary" onClick={() => handleDialog()}>
                             <PersonAdd />
                         </IconButton>

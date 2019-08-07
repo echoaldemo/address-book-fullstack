@@ -52,8 +52,8 @@ const ColoredLine = ({ color }) => (
 const id = localStorage.getItem('id');
 
 class Contacts extends Component {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.state = {
             contacts: [],
             filtered: [],
@@ -63,6 +63,11 @@ class Contacts extends Component {
     }
 
     componentDidMount(){
+        const token = localStorage.getItem('token');
+          if(!token){
+            this.props.history.push('/');
+        }
+        else{
         axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/all/${id}`)
             .then(response => {
                 const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
@@ -74,6 +79,7 @@ class Contacts extends Component {
             .catch(error => {
                 console.error(error)
             })
+        }
     }
 
     updateContacts = () => {
