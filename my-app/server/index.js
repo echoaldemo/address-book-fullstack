@@ -3,6 +3,7 @@ const express = require('express');
 const massive = require('massive');
 const users = require('./controllers/users');
 const contacts = require('./controllers/contacts')
+const groups = require('./controllers/groups')
 const cors = require("cors");
 
 massive({
@@ -31,6 +32,10 @@ massive({
   app.get('/api/contacts/:id', contacts.viewContact)
   app.patch('/api/contacts/:id', contacts.updateContact)
   app.delete('/api/contacts/:id', contacts.deleteContact)
+
+  //GROUPS ENDPOINTS
+  app.post('/api/groups/create/:id', groups.create);
+  app.get('/api/groups/:id', groups.getGroups)
 
   app.listen(process.env.APP_PORT, () => {
     console.log(`Server listening on port ${process.env.APP_PORT}`);

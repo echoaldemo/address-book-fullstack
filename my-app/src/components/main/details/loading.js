@@ -42,7 +42,17 @@ class Loading extends React.Component {
                     console.error(error)
                 })
             setTimeout(this.props.openSuccess, 2000);
-        } 
+        }
+        else if (this.props.addGroup) {
+            axios.post(process.env.REACT_APP_BASE_URL + `/api/groups/create/${this.props.userID}`, this.props.newGroup)
+                .then(response => {
+                    this.props.updateGroups()
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+            setTimeout(this.props.openSuccess, 2000);
+        }  
         else {
             axios.delete(process.env.REACT_APP_BASE_URL + `/api/contacts/${this.props.selected}`)
                 .then(response => {

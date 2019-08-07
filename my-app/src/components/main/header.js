@@ -1,8 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography, IconButton, Tooltip } from '@material-ui/core'
-import { People, PersonAdd } from '@material-ui/icons'
+import { Typography, IconButton, Tooltip, Button } from '@material-ui/core'
+import { People, PersonAdd, Domain, LibraryAdd } from '@material-ui/icons'
 import AddContact from './addContact'
+import AddGroup from './group/addGroup'
+
 
 const useStyles = makeStyles(theme => ({
     contactsHead: {
@@ -15,36 +17,57 @@ const useStyles = makeStyles(theme => ({
             gridTemplateColumns: '1fr 9fr 2fr',
         }
     },
-    peopleIcon: {
+    icon: {
         marginRight: '6px',
         fontSize: '40px'
     },
+    button: {
+        fontSize: '10px',
+        marginLeft: '10px',
+        color: '#068892'
+    }
 }));
 
 export default function Header(props) {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
+    const [openAddContact, setOpenAddContact] = React.useState(false);
+    const [openAddGroup, setOpenAddGroup] = React.useState(false);
 
     function handleDialog() {
-        setOpen(true);
+        props.viewGroups 
+        ? setOpenAddGroup(true)
+        : setOpenAddContact(true)
     }
 
-    function handleClose() {
-        setOpen(false);
+    function handleCloseContact() {
+        setOpenAddContact(false);
     }
 
+    function handleCloseGroup() {
+        setOpenAddGroup(false);
+    }
 
     return (
         <React.Fragment>
             <Typography gutterBottom variant="h5" className={classes.contactsHead}>
-                <People className={classes.peopleIcon} /> All Contacts
-                    <Tooltip title="Add Contact" placement="left">
-                        <IconButton color="primary" onClick={() => handleDialog()}>
-                            <PersonAdd />
-                        </IconButton>
-                    </Tooltip>
+                {props.viewGroups 
+                    ? <Domain className={classes.icon} />
+                    : <People className={classes.icon} />
+                }
+                <div>
+                    {props.viewGroups ? 'Groups' : 'All Contacts'}
+                    <Button onClick={props.handleViewGroup} className={classes.button}>
+                        View {props.viewGroups ? 'All Contacts' : 'Groups'}
+                    </Button>
+                </div>
+                <Tooltip title={props.viewGroups ? "Create Group" : "Add Contact"} placement="left">
+                    <IconButton color="primary" onClick={() => handleDialog()}>
+                        {props.viewGroups ? <LibraryAdd /> : <PersonAdd /> }
+                    </IconButton>
+                </Tooltip>
             </Typography>
-            <AddContact handleAdd={props.handleAdd} open={open} handleClose={handleClose} />
+            <AddContact handleAdd={props.handleAdd} open={openAddContact} handleClose={handleCloseContact} />
+            <AddGroup open={openAddGroup} updateGroups={props.updateGroups} handleClose={handleCloseGroup} />
         </React.Fragment>
     );
 }

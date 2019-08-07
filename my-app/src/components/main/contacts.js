@@ -8,6 +8,7 @@ import TopNav from './topNav'
 import Header from './header'
 import ContactsTable from './contactsTable'
 import InputHead from './inputHead'
+import GroupsTable from './group/groupsTable'
 
 const styles = {
     root: {
@@ -56,9 +57,11 @@ class Contacts extends Component {
         super(props)
         this.state = {
             contacts: [],
+            groups: [],
             filtered: [],
             showFiltered: false,
-            dataLoaded: false
+            dataLoaded: false,
+            viewGroups: false
         }
     }
 
@@ -76,6 +79,14 @@ class Contacts extends Component {
                     dataLoaded: true
                 })
             })
+            .then(() => {
+                axios.get(process.env.REACT_APP_BASE_URL + `/api/groups/${id}`)
+                .then(response => {
+                    this.setState({
+                        groups: response.data,
+                    })
+                })
+            })
             .catch(error => {
                 console.error(error)
             })
@@ -88,6 +99,18 @@ class Contacts extends Component {
                 const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
                 this.setState({
                     contacts: JSON.parse(arr),
+                })
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    }
+
+    updateGroups = () => {
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/groups/${id}`)
+            .then(response => {
+                this.setState({
+                    groups: response.data,
                 })
             })
             .catch(error => {
@@ -128,6 +151,12 @@ class Contacts extends Component {
         })
     }
 
+    handleViewGroup = () => {
+        this.setState({
+            viewGroups: !this.state.viewGroups
+        })
+    }
+
     render() {
         const { classes } = this.props
         return (
@@ -136,9 +165,9 @@ class Contacts extends Component {
                 <TopNav />
                 <div className={classes.mainContainer}>
                     <Paper className={classes.minHeight}>   
-                        <Header handleAdd={this.updateContacts}/>
+                        <Header viewGroups={this.state.viewGroups} updateGroups={this.updateGroups} handleViewGroup={this.handleViewGroup} handleAdd={this.updateContacts}/>
                         <ColoredLine color="#08b5c3" />    
-                        {this.state.dataLoaded
+                        {this.state.dataLoaded && !this.state.viewGroups
                         ?
                         <React.Fragment>
                             <InputHead handleChange={this.handleChange} sortHandler={this.sortHandler} />
@@ -151,6 +180,11 @@ class Contacts extends Component {
                         </React.Fragment>
                         : null
                         }
+                        {this.state.viewGroups
+                        ?  <GroupsTable groups={this.state.groups}/>
+                        : null
+                        }
+                        
                     </Paper>
                 </div>
             </div>
