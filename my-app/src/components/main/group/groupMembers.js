@@ -1,10 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography, Grid, Avatar } from '@material-ui/core'
+import { Typography, Grid, Avatar, Tooltip } from '@material-ui/core'
 import { Button } from '@material-ui/core';
 import ContactDetails from '../contactDetails';
 import withWidth from '@material-ui/core/withWidth';
 import axios from 'axios'
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import AddToGroup from './addToGroup'
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -63,11 +66,16 @@ const ColoredLine = ({ color }) => (
     />
 );
 
+const id = localStorage.getItem('id');
+
 export default function GroupMembers(props) {
     const { width } = props;
     const classes = useStyles();
     const [dataLoaded, setDataLoaded] = React.useState(false);
     const [contacts, setContacts] = React.useState([]);
+    const [notInclude, setNotInclude] = React.useState([]);
+    const [open, setOpen] = React.useState(false);
+    const [selected, setSelected] = React.useState(null);
 
     React.useEffect(() => {
         if (props.contacts){
@@ -83,6 +91,47 @@ export default function GroupMembers(props) {
         }
         setDataLoaded(true)
     }, []);
+
+    function handleDialog() {
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/all/${id}`)
+            .then(response => {
+                const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
+                let myArray = [...JSON.parse(arr)]
+                if (props.contacts){
+                    var filtered = myArray.filter( (item) => {
+                           return props.contacts.indexOf(item.id) === -1;
+                    });
+                    setNotInclude(filtered)
+                }
+                else {
+                    setNotInclude(myArray)
+                }
+            })
+        setOpen(true);
+    }
+
+    function handleClose() {
+        setOpen(false);
+    }
+
+    function updateMembers() {
+        setContacts([])
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/group/${props.groupId}`)
+            .then(response => {
+                response.data.map(contact => {
+                axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/${contact}`)
+                    .then(response => {
+                        setContacts(prevState => [...prevState, response.data] )
+                    })
+                    .catch(error => {
+                        console.error(error)
+                    })
+                })
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    }
 
     return (
         <div className={classes.container}> 
@@ -111,6 +160,17 @@ export default function GroupMembers(props) {
                     </Grid>
                 </Grid>
             ))
+        : null
+        }
+        {dataLoaded
+        ?   <React.Fragment>
+            <Tooltip title="Add contacts to group" placement="right">
+                <Fab size="small" onClick={handleDialog} color="primary" aria-label="add"size="small" >
+                    <AddIcon />
+                </Fab>
+            </Tooltip>
+            <AddToGroup open={open} notInclude={notInclude} handleAdd={updateMembers} groupId={props.groupId} currentMembers={contacts} handleClose={handleClose} />
+            </React.Fragment>
         : null
         }
         </div>

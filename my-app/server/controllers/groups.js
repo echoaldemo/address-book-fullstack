@@ -59,8 +59,43 @@ function getGroups(req, res) {
         });
 }
 
+function updateGroup(req, res) {
+    const db = req.app.get('db');
+    const { id } = req.params;
+    const { contacts } = req.body;
+
+    db.groups
+    .save({
+        id,
+        contacts
+    })
+    .then(group => res.status(201).json(group))
+    .catch(err => {
+        console.error(err);
+        res.status(500).end();
+    });
+}
+
+function viewGroup(req, res) {
+    const db = req.app.get('db');
+    const { id } = req.params
+    
+    db.groups
+        .findOne({
+            id
+        })
+        .then(group => {
+            res.status(200).json(group.contacts);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).end();
+        });
+}
 
 module.exports = {
     create,
-    getGroups
-};
+    getGroups,
+    updateGroup,
+    viewGroup
+}; 

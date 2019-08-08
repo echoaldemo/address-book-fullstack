@@ -35,7 +35,9 @@ massive({
 
   //GROUPS ENDPOINTS
   app.post('/api/groups/create/:id', groups.create);
-  app.get('/api/groups/:id', groups.getGroups)
+  app.get('/api/groups/:id', groups.getGroups);
+  app.patch('/api/groups/:id', groups.updateGroup);
+  app.get('/api/group/:id', groups.viewGroup)
 
   app.listen(process.env.APP_PORT, () => {
     console.log(`Server listening on port ${process.env.APP_PORT}`);
