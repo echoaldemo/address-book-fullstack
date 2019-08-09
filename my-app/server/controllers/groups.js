@@ -97,5 +97,5 @@ module.exports = {
     create,
     getGroups,
     updateGroup,
-    viewGroup
+    viewGroup,
 }; 

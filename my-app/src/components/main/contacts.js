@@ -50,8 +50,6 @@ const ColoredLine = ({ color }) => (
     />
 );
 
-const id = localStorage.getItem('id');
-
 class Contacts extends Component {
     constructor(props){
         super(props)
@@ -61,40 +59,53 @@ class Contacts extends Component {
             filtered: [],
             showFiltered: false,
             dataLoaded: false,
-            viewGroups: false
+            viewGroups: false,
+            config: {},
+            id: '',
+            token: ''
         }
     }
 
     componentDidMount(){
-        const token = localStorage.getItem('token');
-          if(!token){
+        if(!localStorage.getItem('token')){
             this.props.history.push('/');
         }
         else{
-        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/all/${id}`)
-            .then(response => {
-                const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
-                this.setState({
-                    contacts: JSON.parse(arr),
-                    dataLoaded: true
-                })
+            document.title = 'Address Book'
+            const head = `Bearer ${localStorage.getItem('token')}`
+            this.setState({
+                config: {
+                    headers: {authorization: head}
+                },
+                id: localStorage.getItem('id'),
+                token: localStorage.getItem('token')
             })
-            .then(() => {
-                axios.get(process.env.REACT_APP_BASE_URL + `/api/groups/${id}`)
+
+            axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/all/${localStorage.getItem('id')}`, {headers : {authorization: head}})
                 .then(response => {
+                    const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
                     this.setState({
-                        groups: response.data,
+                        contacts: JSON.parse(arr),
+                        dataLoaded: true
                     })
                 })
-            })
-            .catch(error => {
-                console.error(error)
-            })
+                .then(() => {
+                    axios.get(process.env.REACT_APP_BASE_URL + `/api/groups/${localStorage.getItem('id')}`, {headers : {authorization: head}})
+                    .then(response => {
+                        this.setState({
+                            groups: response.data,
+                        })
+                    })
+                })
+                .catch(error => {
+                    console.error(error)
+                    this.props.history.push('/auth')
+                })
         }
     }
 
     updateContacts = () => {
-        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/all/${id}`)
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/all/${this.state.id}`, this.state.config)
             .then(response => {
                 const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
                 this.setState({
@@ -107,7 +118,7 @@ class Contacts extends Component {
     }
 
     updateGroups = () => {
-        axios.get(process.env.REACT_APP_BASE_URL + `/api/groups/${id}`)
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/groups/${this.state.id}`, this.state.config)
             .then(response => {
                 this.setState({
                     groups: response.data,
@@ -119,7 +130,7 @@ class Contacts extends Component {
     }
 
     sortHandler = (params) => {
-        axios.post(process.env.REACT_APP_BASE_URL + `/api/contacts/sort/${id}`, params)
+        axios.post(process.env.REACT_APP_BASE_URL + `/api/contacts/sort/${this.state.id}`, params, this.state.config)
             .then(response => {
                 const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
                 this.setState({
@@ -181,7 +192,7 @@ class Contacts extends Component {
                         : null
                         }
                         {this.state.viewGroups
-                        ?  <GroupsTable groups={this.state.groups}/>
+                        ?  <GroupsTable updateGroups={this.updateGroups} groups={this.state.groups}/>
                         : null
                         }
                         

@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Person, Contacts,  } from '@material-ui/icons'
 import { Menu, MenuItem } from '@material-ui/core'
+import { Redirect } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -65,6 +66,7 @@ const useStyles = makeStyles(theme => ({
 function TopNav(props) {
     const classes = useStyles();   
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [redirect, setRedirect] = React.useState(false);
     let name = localStorage.getItem('name');
  
     function handleClick(event) {
@@ -77,40 +79,46 @@ function TopNav(props) {
 
     function handleLogout(){
         localStorage.clear();
-        props.history.push("/");
+        setRedirect(true)
     }
-    return (
-        <AppBar className={classes.appBar} position="static">
-            <Toolbar>
-                <Contacts className={classes.menuButton} color="inherit" aria-label="menu" />
-                <Typography className={classes.title}>
-                    Address Book
-                </Typography>
-            </Toolbar>
-            <div className={classes.logoutBtnCntnr}>
-                <Button 
-                    aria-controls="simple-menu" 
-                    aria-haspopup="true" 
-                    onClick={handleClick}             
-                    color="inherit"
-                    className={classes.logoutBtn} 
-                >
-                    <Person style={{ marginRight: '10px' }} />
-                    <p className={classes.user}>{name}</p>   
-                </Button>
-                    <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
+
+    if (redirect){
+       return <Redirect to='/' />
+    }
+    else{
+        return (
+            <AppBar className={classes.appBar} position="static">
+                <Toolbar>
+                    <Contacts className={classes.menuButton} color="inherit" aria-label="menu" />
+                    <Typography className={classes.title}>
+                        Address Book
+                    </Typography>
+                </Toolbar>
+                <div className={classes.logoutBtnCntnr}>
+                    <Button 
+                        aria-controls="simple-menu" 
+                        aria-haspopup="true" 
+                        onClick={handleClick}             
+                        color="inherit"
+                        className={classes.logoutBtn} 
                     >
-                        <MenuItem onClick={handleClose}>My account</MenuItem>
-                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                    </Menu>
-            </div>
-        </AppBar>
-    );
+                        <Person style={{ marginRight: '10px' }} />
+                        <p className={classes.user}>{name}</p>   
+                    </Button>
+                        <Menu
+                            id="simple-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                        </Menu>
+                </div>
+            </AppBar>
+        );
+    }
 }
 
 export default withRouter(TopNav)

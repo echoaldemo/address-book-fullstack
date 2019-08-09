@@ -5,6 +5,8 @@ const users = require('./controllers/users');
 const contacts = require('./controllers/contacts')
 const groups = require('./controllers/groups')
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
+
 
 massive({
   host: process.env.DB_HOST,
@@ -20,9 +22,25 @@ massive({
   app.use(express.json());
   app.use(cors());
 
+  const auth = (req, res, next) => {
+    if(!req.headers.authorization) {
+      return res.status(401).end()
+    }
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      jwt.verify(token, process.env.SECRET_KEY)
+      next()
+    } catch (err) {
+      console.error(err)
+      res.status(401).end()
+    }
+  }
+
   //USERS ENDPOINTS
   app.post('/api/users/register', users.register);
   app.post('/api/users/login', users.login);
+
+  app.use(auth)
 
   //CONTACTS ENDPOINTS
   app.post('/api/contacts/add/:id', contacts.create)

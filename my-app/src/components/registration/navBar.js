@@ -9,7 +9,7 @@ import Contacts from '@material-ui/icons/Contacts';
 import TextField from '@material-ui/core/TextField';
 import Toast from './Toast'
 import axios from 'axios'
-
+import { Redirect } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -124,6 +124,8 @@ function NavBar(props) {
     let [open, setOpen] = useState(false);
     let [success, setSuccess] = useState(false);
     let [message, setMessage] = useState('');
+    const [redirect, setRedirect] = React.useState(false);
+
     
     function handleClose(event, reason) {
         if (reason === 'clickaway') {
@@ -153,7 +155,7 @@ function NavBar(props) {
       const state = {
         username,
         password,
-      }
+      };
       axios.post(process.env.REACT_APP_BASE_URL+'/api/users/login', state)
         .then(response => {
           localStorage.setItem('name', response.data.first_name);
@@ -161,10 +163,12 @@ function NavBar(props) {
           localStorage.setItem('token', response.data.token);
           setMessage('Logging in...')
           setSuccess(true)
-          setOpen(true)
-          setTimeout(() => {
-            props.history.push('/contacts');
-          }, 2000)
+          setOpen(true);
+        })
+        .then(() => {
+          if (!redirect){
+            setTimeout(() => {setRedirect(true)}, 2000)
+          }
         })
         .catch(error => {
           setMessage('Invalid login credentials!')
@@ -174,76 +178,81 @@ function NavBar(props) {
         })
     }
 
-    return (
-    <div className={classes.root}>
-      <AppBar className={classes.appBar} position="static" style={props.hide ? { display: 'none' } : {}}>
-        <Toolbar className={classes.toolBar}>
-            <div className={classes.icon}>
-              <Contacts className={classes.menuButton} color="inherit" aria-label="menu" />
-              <Typography className={classes.title}>
-                Address Book
-              </Typography>
-            </div>
-            <form className={classes.form} onSubmit={submitHandler}>
-              <CssTextField
-                required
-                label="Username"
-                margin="normal"
-                className={classes.username}
-                InputProps={{
-                  className: classes.multilineColor
-                }}
-                InputLabelProps={{
-                  className: classes.multilineColor
-                }}
-                FormHelperTextProps={{
-                  className: classes.helperText
-                }}
-                error={userError}
-                onBlur={e => updateUser(e.target.value)}
-                onChange={e => updateUser(e.target.value)}
-                helperText={userError ? "Username is required!" : null}
-              />
-              <CssTextField
-                required
-                label="Password"
-                type="password"
-                margin="normal"
-                className={classes.username}
-                InputProps={{
-                  className: classes.multilineColor
-                }}
-                InputLabelProps={{
-                  className: classes.multilineColor
-                }}
-                FormHelperTextProps={{
-                  className: classes.helperText
-                }}
-                error={passError}
-                onBlur={e => updatePass(e.target.value)}
-                onChange={e => updatePass(e.target.value)}
-                helperText={passError ? "Password is required!" : null}
-              />
+    if (redirect){
+      return <Redirect to='/contacts' />
+    }
+    else{
+      return (
+      <div className={classes.root}>
+        <AppBar className={classes.appBar} position="static" style={props.hide ? { display: 'none' } : {}}>
+          <Toolbar className={classes.toolBar}>
+              <div className={classes.icon}>
+                <Contacts className={classes.menuButton} color="inherit" aria-label="menu" />
+                <Typography className={classes.title}>
+                  Address Book
+                </Typography>
+              </div>
+              <form className={classes.form} onSubmit={submitHandler}>
+                <CssTextField
+                  required
+                  label="Username"
+                  margin="normal"
+                  className={classes.username}
+                  InputProps={{
+                    className: classes.multilineColor
+                  }}
+                  InputLabelProps={{
+                    className: classes.multilineColor
+                  }}
+                  FormHelperTextProps={{
+                    className: classes.helperText
+                  }}
+                  error={userError}
+                  onBlur={e => updateUser(e.target.value)}
+                  onChange={e => updateUser(e.target.value)}
+                  helperText={userError ? "Username is required!" : null}
+                />
+                <CssTextField
+                  required
+                  label="Password"
+                  type="password"
+                  margin="normal"
+                  className={classes.username}
+                  InputProps={{
+                    className: classes.multilineColor
+                  }}
+                  InputLabelProps={{
+                    className: classes.multilineColor
+                  }}
+                  FormHelperTextProps={{
+                    className: classes.helperText
+                  }}
+                  error={passError}
+                  onBlur={e => updatePass(e.target.value)}
+                  onChange={e => updatePass(e.target.value)}
+                  helperText={passError ? "Password is required!" : null}
+                />
+                <Button
+                  onClick={submitHandler}
+                  color="inherit" 
+                  className={classes.loginBtn} 
+                >
+                  Login
+                </Button>
+                 
+              </form>
               <Button
-                onClick={submitHandler}
-                color="inherit" 
-                className={classes.loginBtn} 
-              >
-                Login
-              </Button>
-               
-            </form>
-            <Button
-                onClick={props.handleChange}
-                color="inherit" 
-                className={classes.signUpBtn} 
-              >
-                Don't have an account yet? Sign up here!
-              </Button>
-        </Toolbar>
-      </AppBar>
-      <Toast open={open} handleClose={handleClose} success={success} message={message} />
-    </div>
-  );
+                  onClick={props.handleChange}
+                  color="inherit" 
+                  className={classes.signUpBtn} 
+                >
+                  Don't have an account yet? Sign up here!
+                </Button>
+          </Toolbar>
+        </AppBar>
+        <Toast open={open} handleClose={handleClose} success={success} message={message} />
+      </div>
+    );
+  }
 }
 export default withRouter(NavBar)

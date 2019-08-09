@@ -82,6 +82,7 @@ class ContactDetails extends React.Component {
                     {this.state.details
                     ? <DetailsForm 
                         width={width}
+                        unDeletable={this.props.unDeletable}
                         openEdit={this.openEdit} 
                         updateContacts={this.props.updateContacts} 
                         selected={this.props.selected} 

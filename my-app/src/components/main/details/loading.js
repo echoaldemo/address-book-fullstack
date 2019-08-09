@@ -23,8 +23,9 @@ const styles = {
 class Loading extends React.Component {
     
     componentDidMount(){
+        const head = `Bearer ${localStorage.getItem('token')}`
         if (this.props.edit){
-            axios.patch(process.env.REACT_APP_BASE_URL + `/api/contacts/${this.props.selected}`, this.props.details)
+            axios.patch(process.env.REACT_APP_BASE_URL + `/api/contacts/${this.props.selected}`, this.props.details, {headers: {authorization: head}})
                 .then(response => {
                     setTimeout(this.props.updateContacts, 2000);
                 })
@@ -34,7 +35,7 @@ class Loading extends React.Component {
             setTimeout(this.props.openSuccess, 2000);
         }
         else if (this.props.add) {
-            axios.post(process.env.REACT_APP_BASE_URL + `/api/contacts/add/${this.props.userID}`, this.props.newContact)
+            axios.post(process.env.REACT_APP_BASE_URL + `/api/contacts/add/${localStorage.getItem('id')}`, this.props.newContact, {headers: {authorization: head}})
                 .then(response => {
                     this.props.handleAdd()
                 })
@@ -44,7 +45,7 @@ class Loading extends React.Component {
             setTimeout(this.props.openSuccess, 2000);
         }
         else if (this.props.addGroup) {
-            axios.post(process.env.REACT_APP_BASE_URL + `/api/groups/create/${this.props.userID}`, this.props.newGroup)
+            axios.post(process.env.REACT_APP_BASE_URL + `/api/groups/create/${localStorage.getItem('id')}`, this.props.newGroup, {headers: {authorization: head}})
                 .then(response => {
                     this.props.updateGroups()
                 })
@@ -54,7 +55,7 @@ class Loading extends React.Component {
             setTimeout(this.props.openSuccess, 2000);
         }  
         else {
-            axios.delete(process.env.REACT_APP_BASE_URL + `/api/contacts/${this.props.selected}`)
+            axios.delete(process.env.REACT_APP_BASE_URL + `/api/contacts/${this.props.selected}`, {headers: {authorization: head}})
                 .then(response => {
                     setTimeout(this.props.updateContacts, 2000);
                 })

@@ -21,7 +21,6 @@ const useStyles = makeStyles(theme => ({
         },
         '@media (max-width: 699px)' : {
             gridTemplateColumns: '1fr',
-            justifyItems: 'center'
         },
         '@media (max-width: 650px)' : {
             gridTemplateColumns: '1fr 1fr',
@@ -76,13 +75,21 @@ export default function GroupMembers(props) {
     const [notInclude, setNotInclude] = React.useState([]);
     const [open, setOpen] = React.useState(false);
     const [selected, setSelected] = React.useState(null);
+    const [config, setConfig] = React.useState('')
+    const [openDetails, setOpenDetails] = React.useState(false);
 
     React.useEffect(() => {
+        const head = `Bearer ${localStorage.getItem('token')}`
+        setConfig({
+            headers: {authorization: head}    
+        })
         if (props.contacts){
             props.contacts.map(contact => {
-                axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/${contact}`)
+                axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/${contact}`, {headers: {authorization: head}})
                 .then(response => {
+                    if (response.data){
                     setContacts(prevState => [...prevState, response.data] )
+                    }
                 })
                 .catch(error => {
                     console.error(error)
@@ -93,7 +100,7 @@ export default function GroupMembers(props) {
     }, []);
 
     function handleDialog() {
-        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/all/${id}`)
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/all/${id}`, config)
             .then(response => {
                 const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
                 let myArray = [...JSON.parse(arr)]
@@ -110,18 +117,26 @@ export default function GroupMembers(props) {
         setOpen(true);
     }
 
+    function openContact(id) {
+        setSelected(id)
+        setOpenDetails(true)
+    }
+
     function handleClose() {
         setOpen(false);
+        setOpenDetails(false)
     }
 
     function updateMembers() {
+        props.updateGroups()
         setContacts([])
-        axios.get(process.env.REACT_APP_BASE_URL + `/api/group/${props.groupId}`)
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/group/${props.groupId}`, config)
             .then(response => {
                 response.data.map(contact => {
-                axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/${contact}`)
+                axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/${contact}`, config)
                     .then(response => {
-                        setContacts(prevState => [...prevState, response.data] )
+                        const arr = JSON.stringify(response.data, function (key, value) { return value || "" })
+                        setContacts(prevState => [...prevState, JSON.parse(arr)] )
                     })
                     .catch(error => {
                         console.error(error)
@@ -140,7 +155,7 @@ export default function GroupMembers(props) {
                 <Grid key={contact.first_name} item sm container>
                     <Grid item>
                         <Avatar className={classes.avatar}>
-                            <Button /*onClick={() => handleDialog(contact.id)}*/>
+                            <Button onClick={() => openContact(contact.id)}>
                                 {contact.first_name.charAt(0) + contact.last_name.charAt(0)}
                             </Button>
                         </Avatar>
@@ -165,11 +180,18 @@ export default function GroupMembers(props) {
         {dataLoaded
         ?   <React.Fragment>
             <Tooltip title="Add contacts to group" placement="right">
-                <Fab size="small" onClick={handleDialog} color="primary" aria-label="add"size="small" >
+                <Fab style={{ backgroundColor: "rgb(13, 169, 181)" }}size="small" onClick={handleDialog} color="primary" aria-label="add"size="small" >
                     <AddIcon />
                 </Fab>
             </Tooltip>
-            <AddToGroup open={open} notInclude={notInclude} handleAdd={updateMembers} groupId={props.groupId} currentMembers={contacts} handleClose={handleClose} />
+            <AddToGroup config={config} open={open} notInclude={notInclude} handleAdd={updateMembers} groupId={props.groupId} currentMembers={contacts} handleClose={handleClose} />
+            <ContactDetails 
+            updateContacts={updateMembers}
+            selected={selected}
+            open={openDetails} 
+            handleClose={handleClose}
+            unDeletable={true}
+            />
             </React.Fragment>
         : null
         }

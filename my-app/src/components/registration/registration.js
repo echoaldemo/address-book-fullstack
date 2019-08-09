@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Background from '../../assets/images/background.png'
 import withWidth from '@material-ui/core/withWidth'
+import { Redirect } from 'react-router-dom'
+
 
 const useStyles = makeStyles(theme => ({
   root: {

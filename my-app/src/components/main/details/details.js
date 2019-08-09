@@ -45,10 +45,15 @@ export default function DetailsForm(props) {
     [edit, setEdit] = React.useState(true),
     [save, setSave] = React.useState(false),
     [contact, setContact] = React.useState(null),
-    [dataLoaded, setDataLoaded] = React.useState(false);
+    [dataLoaded, setDataLoaded] = React.useState(false),
+    [config, setConfig] = React.useState('');
     
     React.useEffect(() => {
-        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/${props.selected}`)
+        const head = `Bearer ${localStorage.getItem('token')}`
+        setConfig({
+            headers: {authorization: head}
+        })
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/contacts/${props.selected}`, {headers: {authorization: head}})
             .then(response => {
                 setContact(response.data)
                 setDataLoaded(true)
@@ -281,7 +286,10 @@ export default function DetailsForm(props) {
             </DialogContent>
             : null
             }
-            <div className={classes.actions}>
+            <div className={props.unDeletable ? '' : classes.actions}>
+                {props.unDeletable
+                ? null
+                :       
                 <div className={classes.delete}>
                     <Tooltip title="Delete Contact" placement="right">
                         <IconButton onClick={props.delete} color="primary">
@@ -289,6 +297,7 @@ export default function DetailsForm(props) {
                         </IconButton>
                     </Tooltip>
                 </div>
+                }
                 <DialogActions>
                     <Button onClick={props.handleClose} color="primary">
                         Cancel

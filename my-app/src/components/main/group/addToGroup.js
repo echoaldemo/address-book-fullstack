@@ -110,14 +110,21 @@ function AddToGroup(props) {
         const state = {
             contacts
         }
-        axios.patch(process.env.REACT_APP_BASE_URL + `/api/groups/${props.groupId}`, state)
+        axios.patch(process.env.REACT_APP_BASE_URL + `/api/groups/${props.groupId}`, state, props.config)
             .then(response => {
                 props.handleAdd()
             })
             .catch(error => {
                 console.error(error)
-            })
-        
+            })   
+    }
+
+    function handleDelete(index){
+      setDataLoaded(false)
+      let tmp = current;
+      tmp.splice(index, 1);
+      setCurrent(tmp)
+      setTimeout(() => {setDataLoaded(true)}, 10)
     }
 
 
@@ -143,8 +150,8 @@ function AddToGroup(props) {
                           input={<Input id="select-multiple-chip" />}
                           renderValue={selected => (
                             <div className={classes.chips}>
-                              {selected.map(value => (
-                                <Chip key={value.id} label={value.first_name} className={classes.chip} />
+                              {selected.map((value, index) => (
+                                <Chip key={value.id} label={value.first_name + ' ' + value.last_name} className={classes.chip}  onDelete={() => handleDelete(index)} />
                               ))}
                             </div>
                           )}
@@ -152,7 +159,7 @@ function AddToGroup(props) {
                         >
                           {props.notInclude.map(contact => (
                             <MenuItem key={contact.id} value={contact} style={getStyles(contact.id, current, theme)}>
-                              {contact.first_name}
+                              {contact.first_name + ' ' + contact.last_name}
                             </MenuItem>
                           ))}
                         </Select>
@@ -161,23 +168,14 @@ function AddToGroup(props) {
             </DialogContent>
             : null
             }
-            <div className={classes.actions}>
-                <div className={classes.delete}>
-                    <Tooltip title="Delete Contact" placement="right">
-                        <IconButton color="primary">
-                            <DeleteForever />
-                        </IconButton>
-                    </Tooltip>
-                </div>
                 <DialogActions>
                     <Button onClick={props.handleClose} color="primary">
-                        Cancel
+                        Close
                     </Button>
                     <Button onClick={() => handleSave()} color="primary">
                         Save
                     </Button>
                 </DialogActions>
-            </div>
         </Dialog>
         </React.Fragment>
     );
